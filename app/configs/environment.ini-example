@@ -1,0 +1,37 @@
+# Do not add this file to a repository.
+# It should be moved over to your individual environment (dev, stage, prod etc) and edited apprpriately.
+[globals]
+DEBUG = 3
+DB_COUNT=3
+
+[database]
+DB_TYPE=MYSQL
+DB_HOST=localhost
+DB_NAME=tiger123
+DB_USER=tiger123
+DB_PASSWORD=foobar
+DB_PORT=3302
+
+[database.0]
+DB_TYPE=MYSQL
+DB_HOST=localhost
+DB_NAME=cms0
+DB_USER=johnDoe
+DB_PASSWORD=password
+DB_PORT=3302
+
+[database.1]
+DB_TYPE=MYSQL
+DB_HOST=localhost
+DB_NAME=cms1
+DB_USER=johnDoe
+DB_PASSWORD=password
+DB_PORT=3302
+
+[database.2]
+DB_TYPE=MYSQL
+DB_HOST=localhost
+DB_NAME=cms2
+DB_USER=johnDoe
+DB_PASSWORD=password
+DB_PORT=3302
