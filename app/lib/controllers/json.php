@@ -67,7 +67,6 @@ class json extends \core\controller_model
                         if (!in_array($protocol, $mhd['protocols'])) {
                             $retVal = false;
                         } else {
-
                             $retVal = $mhd;
                             $retVal['method'] = $method;
                         }
