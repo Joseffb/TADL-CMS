@@ -8,9 +8,9 @@
 
 class index {
     function root($f3) {
-        $d = new \tables\users();
-        echo $f3->db->log();
-        //$d->setup();
+        //$d = new \tables\users();
+        //echo $f3->db->log();
+        \tables\users::setup();
         echo "<h3>This is a home test.</h3>";
 
 

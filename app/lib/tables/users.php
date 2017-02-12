@@ -9,7 +9,6 @@ class users extends \core\tables
     protected $table = 'users';
     public function __construct($prefix = FALSE)
     {
-
         $this->fieldConf = $this->get_fieldConf();
         ##### Setup Table Fields #####
         $this->fieldConf['user_name'] = array(
@@ -35,7 +34,7 @@ class users extends \core\tables
         //sets all db's up from config, and returns default
         //$this->db = $this->fw->exists('DB2') ?$this->fw->get('DB2'): core_DBC::dbc(2);
 
-        $this->db = $this->fw->exists('DB') ?$this->fw->get('DB'): db_connect::dbc();echo "hi";
+        $this->db = $this->fw->exists('DB') ?$this->fw->get('DB'): db_connect::boot();
         parent::__construct();
 
     }

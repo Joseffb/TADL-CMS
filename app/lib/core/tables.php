@@ -12,12 +12,18 @@
 
 	class tables extends \DB\Cortex {
         public $fw = FALSE;
+        protected $fluid = false;
         public function __construct() {
-			parent::__construct();
+            $this->fw = \Base::instance();
+            \utils\debug::pe($this->db);
+            \utils\debug::pe($this->fieldConf);
+            \utils\debug::pe($this->table);
+            \utils\debug::pe($this->fluid);
+            parent::__construct();
 			//save date record was modified.
-            //$this->beforesave(function($mapper){ $mapper->touch('modified'); });
+            $this->beforesave(function($mapper){ $mapper->touch('modified'); });
             //save a user id of person who modified record.
-            //$this->beforesave(function($mapper){ $mapper->modified_by = $this->fw->USER_ID; });
+            $this->beforesave(function($mapper){ $mapper->modified_by = $this->fw->USER_ID; });
 		}
 
         static public function class_test() {

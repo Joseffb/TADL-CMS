@@ -47,7 +47,7 @@ class db_connect extends \Prefab
             }
         }
     }
-        static function dbc($dbID = 0)
+        static function boot($dbID = 0)
     {
         $c = new db_connect();
         return $c->fw->get('DB' . $dbID);
