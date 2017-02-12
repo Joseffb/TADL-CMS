@@ -47,9 +47,13 @@ class core_DBC extends \Prefab
             }
         }
         if ($do_connection) {
-
             $this->connect_db($db_config);
         }
+    }
+
+    static function dbc ($dbID = 0) {
+        $c = new core_DBC();
+        return  $c->fw->get('DB'.$dbID);
     }
 
     public
@@ -234,13 +238,13 @@ class core_DBC extends \Prefab
 
         //we keep track of all the database connection names (not object) in the registry.
         $databases = $this->fw->get('DATABASES');
-        $db_count = count($databases);
+        $db_count = count($databases)-1;
         $databases[] = 'DB' . $db_count++;
         $databases = $this->fw->set('DATABASES', $databases);
         //keep track of each individual db connection (object) in a variable DB0, DB1, DB2, etc
         $this->fw->set('DB' . $db_count, $db);
         //DB0 will get the honor of being the default DB. If the DEFAULT config switch is set to true this will overwrite DB0 as the default.
-        if ($db && ($db_count == 1 || !empty($db_config['DB_DEFAULT']))) {
+        if ($db && ($db_count == 0 || !empty($db_config['DB_DEFAULT']))) {
             $this->fw->set('DB', $db);
         }
         return $db;

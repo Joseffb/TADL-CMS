@@ -6,17 +6,34 @@ namespace lib;
 class users_tbl extends core_tables
 {
     protected $table = 'users';
-    protected
-        $fieldConf = "";
     public function __construct($prefix = FALSE)
     {
         $this->fieldConf = $this->get_fieldConf();
-        //utils::pe($this->fieldConf);
+        ##### Setup Table Fields #####
+        $this->fieldConf['user_name'] = array(
+            'type' => 'VARCHAR256',
+            'nullable' => FALSE,
+        );
+        $this->fieldConf['email'] = array(
+            'type' => 'VARCHAR256',
+            'nullable' => FALSE,
+        );
+        $this->fieldConf['password'] = array(
+            'type' => 'VARCHAR256',
+            'nullable' => FALSE,
+        );
+        $this->fieldConf['is_enabled'] = array(
+            'type' => 'INT1',
+            'nullable' => FALSE,
+        );
+
         $this->fw = \Base::instance();
-        if (!$this->fw->exists('DB')) {
-            new core_DBC();
-        }
-        $this->db = $this->fw->get('DB');
+
+        //Use this way if you want a secondary database;
+        //sets all db's up from config, and returns default
+        //$this->db = $this->fw->exists('DB2') ?$this->fw->get('DB2'): core_DBC::dbc(2);
+
+        $this->db = $this->fw->exists('DB') ?$this->fw->get('DB'): core_DBC::dbc();
         parent::__construct();
 
     }

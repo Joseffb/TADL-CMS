@@ -9,8 +9,11 @@
 class index {
     function root($f3) {
         $d = new \lib\users_tbl();
-        $d->setup();
+        echo $f3->db->log();
+        //$d->setup();
         echo "<h3>This is a home test.</h3>";
+
+
     }
 
 }

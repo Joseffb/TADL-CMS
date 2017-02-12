@@ -13,7 +13,6 @@
 	class core_tables extends \DB\Cortex {
         public $fw = FALSE;
         public function __construct() {
-
 			parent::__construct();
 			//save date record was modified.
             //$this->beforesave(function($mapper){ $mapper->touch('modified'); });
@@ -26,7 +25,7 @@
         }
 
 		public static function setup( $db = NULL, $table = NULL, $fields = NULL ) {
-			//parent::setup( $db, $table, $fields );
+			parent::setup( $db, $table, $fields );
         }
 
         public function get_fieldConf() {
