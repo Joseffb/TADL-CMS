@@ -35,7 +35,7 @@ class wadl extends \core\controller_model
                 array('name' => 'namespace', 'type' => 'string'),
                 array('name' => 'controller', 'type' => 'string'),
                 array('name' => 'method', 'type' => 'string'),
-                array('name' => 'comment', 'type' => 'string', 'values' => array('public', 'private', 'protected', 'static')),
+                array('name' => 'comment', 'type' => 'string'),
                 array('name' => 'args_expected', 'type' => 'array'),
                 array('name' => 'scope', 'type' => 'string', 'values' => array('public', 'private', 'protected', 'static')),
             )
