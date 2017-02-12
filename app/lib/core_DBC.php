@@ -31,7 +31,6 @@ class core_DBC extends \Prefab
             }
         }
         $db_config = array();
-        $do_connection = false;
         foreach ($fw->database as $k => $v) {
             if (is_array($v)) {
                 $db_config = $v;
@@ -46,7 +45,6 @@ class core_DBC extends \Prefab
                     }
                 }
             }
-
         }
     }
         static function dbc($dbID = 0)
