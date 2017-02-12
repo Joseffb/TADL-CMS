@@ -39,21 +39,17 @@ class core_DBC extends \Prefab
             } else {
                 $db_config[$k] = $v;
                 if ($res = $this->check_db_config($db_config)) {
-                    $do_connection = true;
+                    $this->connect_db($db_config);
+                    if ($res == 99) {
+                        break;
 
-                    if ($do_connection) {
-                        $this->connect_db($db_config);
-                        if ($res == 99) {
-                            break;
-                        }
                     }
                 }
             }
+
         }
-
     }
-
-    static function dbc($dbID = 0)
+        static function dbc($dbID = 0)
     {
         $c = new core_DBC();
         return $c->fw->get('DB' . $dbID);
