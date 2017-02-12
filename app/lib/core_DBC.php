@@ -40,20 +40,23 @@ class core_DBC extends \Prefab
                 $db_config[$k] = $v;
                 if ($res = $this->check_db_config($db_config)) {
                     $do_connection = true;
-                    if ($res == 99) {
-                        break;
+
+                    if ($do_connection) {
+                        $this->connect_db($db_config);
+                        if ($res == 99) {
+                            break;
+                        }
                     }
                 }
             }
         }
-        if ($do_connection) {
-            $this->connect_db($db_config);
-        }
+
     }
 
-    static function dbc ($dbID = 0) {
+    static function dbc($dbID = 0)
+    {
         $c = new core_DBC();
-        return  $c->fw->get('DB'.$dbID);
+        return $c->fw->get('DB' . $dbID);
     }
 
     public
@@ -238,7 +241,7 @@ class core_DBC extends \Prefab
 
         //we keep track of all the database connection names (not object) in the registry.
         $databases = $this->fw->get('DATABASES');
-        $db_count = count($databases)-1;
+        $db_count = count($databases) - 1;
         $databases[] = 'DB' . $db_count++;
         $databases = $this->fw->set('DATABASES', $databases);
         //keep track of each individual db connection (object) in a variable DB0, DB1, DB2, etc
