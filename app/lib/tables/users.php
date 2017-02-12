@@ -85,7 +85,7 @@ class users extends \core\tables
                 1
             ),
         );
-
+        //todo ensure that this value is not already there. Right now it will duplicate record.
         foreach ($VALUES as $v) {
             $table->user_name = $v[0];
             $table->email = $v[1];
