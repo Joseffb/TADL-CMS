@@ -6,7 +6,7 @@
    * Time: 7:09 PM
    */
 
-  namespace lib;
+  namespace controllers;
   class test extends \Test {
 	public $f3 = FALSE;
 	public $db = FALSE;

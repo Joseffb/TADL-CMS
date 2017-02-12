@@ -1,13 +1,15 @@
 <?php
 
-namespace lib;
+namespace tables;
 
+use core\db_connect;
 
-class users_tbl extends core_tables
+class users extends \core\tables
 {
     protected $table = 'users';
     public function __construct($prefix = FALSE)
     {
+
         $this->fieldConf = $this->get_fieldConf();
         ##### Setup Table Fields #####
         $this->fieldConf['user_name'] = array(
@@ -33,7 +35,7 @@ class users_tbl extends core_tables
         //sets all db's up from config, and returns default
         //$this->db = $this->fw->exists('DB2') ?$this->fw->get('DB2'): core_DBC::dbc(2);
 
-        $this->db = $this->fw->exists('DB') ?$this->fw->get('DB'): core_DBC::dbc();
+        $this->db = $this->fw->exists('DB') ?$this->fw->get('DB'): db_connect::dbc();echo "hi";
         parent::__construct();
 
     }

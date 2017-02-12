@@ -10,9 +10,9 @@
  *
  */
 
-namespace lib;
+namespace controllers;
 
-class auth_ctl extends core_cm
+class auth extends \core\controller_model
 {
     public $authenticated_id = FALSE;
     public $authenticated_type = FALSE;

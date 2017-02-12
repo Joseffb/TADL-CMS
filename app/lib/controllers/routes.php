@@ -10,9 +10,9 @@
  *
  */
 
-namespace lib;
+namespace controllers;
 
-class routes_ctl extends core_cm {
+class routes extends \core\controller_model {
 
     public function __construct(  ) {
         parent::__construct();

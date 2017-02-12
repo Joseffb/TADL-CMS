@@ -8,10 +8,10 @@
  * This is hte core controller / model file.
  */
 
-namespace lib;
+namespace core;
 
 
-class core_cm extends \Prefab
+class controller_model extends \Prefab
 {
 
     public $fw, $db;
@@ -26,7 +26,7 @@ class core_cm extends \Prefab
     public function connect_db()
     {
         if ($this->fw->devoid('DB')) {
-            $DB = new core_DBC();
+            new db_connect();
         }
         $this->db = $this->fw->GET('DB');
     }

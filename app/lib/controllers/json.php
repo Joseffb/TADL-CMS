@@ -6,9 +6,9 @@
  * Time: 11:34 AM
  */
 
-namespace lib;
+namespace controllers;
 
-class json extends core_cm {
+class json extends \core\controller_model {
     function request() {
         echo "hi request";
     }

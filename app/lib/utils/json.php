@@ -6,41 +6,10 @@
  * Time: 10:26 AM
  */
 
-namespace lib;
+namespace utils;
 
 
-class utils {
-    static function pe($stuff) {
-        $fw = \Base::instance();
-        if($fw->DEBUG > 0) {
-            $bt = debug_backtrace();
-            $caller = array_shift($bt);
-            echo "<em>called from ".$caller['file']. " line:".$caller['line'].'<br/></em>';
-            echo "<pre>";
-            var_dump($stuff);
-            echo "<pre>";
-        }
-    }
-
-    static function void($key) {
-        $fw = \Base::instance();
-        $r = false;
-        if(!$fw->exists($key)) {
-            $r = true;
-        } elseif($fw->devoid($key)) {
-            $r = true;
-        } elseif($fw->exists($key) && $fw->devoid($key)) {
-            $r = true;
-        } elseif ($fw->exists($key) && !$fw->devoid($key)) {
-            $r = false;
-        }
-        return $r;
-    }
-
-    static function not_void($key) {
-        return !self::void($key);
-    }
-
+class json {
     static function send_json($code, $options = null) {
         //self::pe($options);
         if(!empty($options) && !is_array($options)) {
@@ -130,14 +99,4 @@ class utils {
         return $json_message;
     }
 
-    function get_params($int = false) {
-        $uri_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        $uri_segments = explode('/', $uri_path);
-        if ($int && is_int($int)) {
-            $retVal = $uri_segments[$int];
-        } else {
-            $retVal = $uri_segments;
-        }
-        return $retVal;
-    }
 }

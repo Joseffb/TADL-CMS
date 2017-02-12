@@ -3,8 +3,8 @@
 /*
  * This is the core DB Connection file.
  */
-namespace lib;
-class core_DBC extends \Prefab
+namespace core;
+class db_connect extends \Prefab
 {
     public $fw = false;
     public $host = false;
@@ -21,7 +21,7 @@ class core_DBC extends \Prefab
         // support multiple db configurations.
         // As such we need to know the number of databases to loop while
         $cnt = 0;
-        if (utils::not_void('DB_COUNT')) {
+        if (!$fw->devoid('DB_COUNT')) {
             $cnt = $fw->DB_COUNT;
         } else {
             foreach ($fw->database as $obj) {
@@ -49,7 +49,7 @@ class core_DBC extends \Prefab
     }
         static function dbc($dbID = 0)
     {
-        $c = new core_DBC();
+        $c = new db_connect();
         return $c->fw->get('DB' . $dbID);
     }
 

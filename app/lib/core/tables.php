@@ -8,9 +8,9 @@
      * this is the core Cortex Tables file
 	 */
 
-	namespace lib;
+	namespace core;
 
-	class core_tables extends \DB\Cortex {
+	class tables extends \DB\Cortex {
         public $fw = FALSE;
         public function __construct() {
 			parent::__construct();
@@ -22,10 +22,6 @@
 
         static public function class_test() {
             return TRUE;
-        }
-
-		public static function setup( $db = NULL, $table = NULL, $fields = NULL ) {
-			parent::setup( $db, $table, $fields );
         }
 
         public function get_fieldConf() {

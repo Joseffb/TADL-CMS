@@ -7,9 +7,9 @@
  */
 
 
-namespace lib;
+namespace controllers;
 
-class users_ctl extends core_cm {
+class users extends \core\controller_model {
 
     
 }
