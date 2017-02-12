@@ -15,9 +15,9 @@ $fw->set( 'UI', $fw->get( 'APP' ) . "ui/" );
 $fw->set( 'TEMPLATES_JSON', $fw->get( 'APP' ) . "ui/json/" );
 $fw->set( 'TEMPLATES_EMAIL', $fw->get( 'APP' ) . "ui/emails/" );
 $fw->set( 'TEMPLATES_SITE', $fw->get( 'APP' ) . "ui/templates/" );
-$fw->set( 'TEMP', $fw->get( 'APP' ) . "temp/" );
 //define global variables - stop
 
 $fw->config($fw->CONFIGS."load.cfg");
+
 
 $fw->run();

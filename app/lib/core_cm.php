@@ -18,16 +18,17 @@ class core_cm extends \Prefab
 
     public function __construct()
     {
+        $DB = false;
         $this->fw = \Base::instance();
-        $this->setup_db();
+        $this->connect_db();
     }
 
-    public function setup_db()
+    public function connect_db()
     {
-        if (!$this->fw->exists('DB')) {
-            new core_DBC();
+        if ($this->fw->devoid('DB')) {
+            $DB = new core_DBC();
         }
-        $this->db = $this->fw->get('DB');
+        $this->db = $this->fw->GET('DB');
     }
 
     public function test () {
@@ -298,5 +299,16 @@ class core_cm extends \Prefab
             }
         }
         return $condition;
+    }
+
+    public function escape($value)
+    {
+        if ($value)
+        {
+            return "`".str_replace("`","``",$value)."`";
+        } else {
+            error_log("Cannot escape ".$value.". Operation aborted for the greater good of all mankind. 500");
+            die();
+        }
     }
 }

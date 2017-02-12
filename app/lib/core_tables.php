@@ -11,45 +11,40 @@
 	namespace lib;
 
 	class core_tables extends \DB\Cortex {
-        protected $fw = FALSE;
-        protected
-            $fieldConf = array(
-            'modified_by'	=> array(
-                'type'		 => 'INT4',
-                'nullable'	 => false,
-            ),
-            'modified' => array(
-                'type'     => 'TIMESTAMP',
-                'nullable' => false,
-            ),
-            'created'		=> array(
-                'type'		=> 'TIMESTAMP',
-                'nullable'	=> false,
-                'default'   => 'CUR_STAMP',
-            ),
-        );
-		static public function class_test() {
-			return TRUE;
-		}
+        public $fw = FALSE;
+        public function __construct() {
 
-		public function __construct() {
-            $this->fw = \Base::instance();
 			parent::__construct();
-
 			//save date record was modified.
-            $this->beforesave(function($mapper){ $mapper->touch('modified'); });
-
+            //$this->beforesave(function($mapper){ $mapper->touch('modified'); });
             //save a user id of person who modified record.
-            $this->beforesave(function($mapper){ $mapper->modified_by = $this->fw->USER_ID; });
+            //$this->beforesave(function($mapper){ $mapper->modified_by = $this->fw->USER_ID; });
 		}
 
-		public static function setup( $db = NULL, $table = NULL, $fields = NULL ) {
-			parent::setup( $db, $table, $fields );
+        static public function class_test() {
+            return TRUE;
         }
 
-        public function global_fields() {
+		public static function setup( $db = NULL, $table = NULL, $fields = NULL ) {
+			//parent::setup( $db, $table, $fields );
+        }
+
+        public function get_fieldConf() {
             //these fields will be in every table
             return array(
+                'modified_by'	=> array(
+                    'type'		 => 'VARCHAR256',
+                    'nullable'	 => false,
+                ),
+                'modified' => array(
+                    'type'     => 'TIMESTAMP',
+                    'nullable' => false,
+                ),
+                'created'		=> array(
+                    'type'		=> 'TIMESTAMP',
+                    'nullable'	=> false,
+                    'default'   => 'CUR_STAMP',
+                ),
             );
         }
 	}
