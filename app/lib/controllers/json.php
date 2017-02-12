@@ -42,12 +42,12 @@ class json extends \core\controller_model
     {
         $props = http::get_params();
         $wadl = new wadl();
-        $w = $wadl->get_wadl('public');
+        $w = $wadl->get_wadl('exposed');
         unset($props[0]);
         unset($props[1]);
         $namespace = "controllers"; //default namespace
         $controller = array_shift($props);
-        $method = array_shift($props);;
+        $method = array_shift($props);
         //debug::pe($w[$namespace][$controller]['methods'][$method]);
         //get namespace
         if (!empty($w[$namespace][$controller]['methods'][$method])) {
@@ -60,7 +60,6 @@ class json extends \core\controller_model
             }
         } else {
             foreach ($w as $namespace => $con) {
-
                 foreach ($con as $c => $attrib) {
                     if (!empty($attrib['methods'][$method])) {
                         $mhd = $attrib['methods'][$method];
