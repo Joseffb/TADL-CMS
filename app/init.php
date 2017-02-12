@@ -19,5 +19,7 @@ $fw->set( 'TEMPLATES_SITE', $fw->get( 'APP' ) . "ui/templates/" );
 
 $fw->config($fw->CONFIGS."load.cfg");
 
+$c = new \controllers\wadl();
+$c->register();
 
 $fw->run();

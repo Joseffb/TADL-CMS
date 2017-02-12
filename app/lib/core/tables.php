@@ -19,7 +19,7 @@
 			//save date record was modified.
             $this->beforesave(function($mapper){ $mapper->touch('modified'); });
             //save a user id of person who modified record.
-            $this->beforesave(function($mapper){ $mapper->modified_by = $this->fw->USER_ID; });
+            $this->beforesave(function($mapper){ $mapper->modified_by = $this->fw->USER_ID?:0; });
 		}
 
         static public function class_test() {

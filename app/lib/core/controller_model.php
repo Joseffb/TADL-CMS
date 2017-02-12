@@ -62,6 +62,7 @@ class controller_model extends \Prefab
                     return false;
                 } elseif (!$query) {
                     $query = "SELECT * FROM " . $options['table'];
+                    //todo try to create a where statement id binding is filled in.
                 }
                 $binding = !$this->fw->devoid($options['bind_array']) ? $options['bind_array'] : null;
 
