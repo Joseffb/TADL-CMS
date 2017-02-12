@@ -21,6 +21,7 @@ class wadl extends \core\controller_model
 
     public function register()
     {
+        //todo maybe \core\controller_model should magically register these for its children?
         $this->wadl_register('controllers', 'wadl', 'show', array('GET'), 'exposed', 'sends wadl to json output');
         $this->wadl_register('controllers', 'wadl', 'get_wadl', array('GET'), 'public','gets wadl registrations',
             array(
@@ -47,12 +48,14 @@ class wadl extends \core\controller_model
         json::send_json(200, array('data' => $this->get_wadl('exposed'), 'msg' => 'With great wisdom comes great responsibility'));
     }
 
-    public function get_wadl($scope = 'all', $options = null)
+    public function get_wadl($scope = 'all')
     {
         $wadl = $this->fw->exists('WADL') ? $this->fw->get('WADL') : false;
         if ($wadl && $scope != 'all') {
             $wadl = $wadl[$scope];
         }
+
+        //todo add in ability to hide parts of wadl like namespace
 
         return $wadl;
     }
