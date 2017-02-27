@@ -7,10 +7,11 @@
  */
 
 namespace controllers;
-
 use utils\json;
 
-class wadl extends \core\controller_model
+//tiger address listing - list of all functions that can be used in json api
+
+class tadl extends \core\controller_model
 {
     public $fw = FALSE;
 
@@ -19,12 +20,12 @@ class wadl extends \core\controller_model
         parent::__construct();
     }
 
-    public function register()
+    public function json_register()
     {
-        //event_wadl_register_before_submit
+        //event_tadl_register_before_submit
         //todo maybe \core\controller_model should magically register these for its children?
-        $this->wadl_register('controllers', 'wadl', 'show', array('GET'), 'exposed', 'sends wadl to json output');
-        $this->wadl_register('controllers', 'wadl', 'get_wadl', array('GET'), 'public','gets wadl registrations',
+        $this->register('controllers', 'tadl', 'show', array('GET'), 'exposed', 'sends wadl to json output');
+        $this->register('controllers', 'tadl', 'get_wadl', array('GET'), 'public','gets wadl registrations',
             array(
                 array('name' => 'scope',
                     'type' => 'string',
@@ -32,7 +33,7 @@ class wadl extends \core\controller_model
                 )
             )
         );
-        $this->wadl_register('controllers', 'wadl', 'wadl_register', array('GET'), 'public','adds new wadl registrations',
+        $this->register('controllers', 'tadl', 'wadl_register', array('GET'), 'public','adds new wadl registrations',
             array(
                 array('name' => 'namespace', 'type' => 'string'),
                 array('name' => 'controller', 'type' => 'string'),
@@ -48,21 +49,21 @@ class wadl extends \core\controller_model
     public function show()
     {
         //event_wadl_show_before_submit
-        $data = $this->get_wadl('exposed');
+        $data = $this->get_tadl('exposed');
         //event_wadl_show_data_submit
-        json::send_json(200, array('data' => $data, 'msg' => 'With great wisdom comes great responsibility'));
+
+        json::send_json(200, array('data' => $data, 'msg' => 'JSON API Documentation. With great wisdom comes great responsibility'));
     }
 
-    public function get_wadl($scope = 'all')
+    public function get_tadl($scope = 'all')
     {
 
+        //todo pull from db
         $wadl = $this->fw->exists('WADL') ? $this->fw->get('WADL') : false;
         //event_get_wadl_pull
         if ($wadl && $scope != 'all') {
             $wadl = $wadl[$scope];
         }
-
-        //todo add in ability to hide parts of wadl like namespace
         //event_get_wadl_return
         return $wadl;
     }
@@ -70,16 +71,17 @@ class wadl extends \core\controller_model
     /**
      * registers JSON calls with the WADL
      */
-    public function wadl_register($namespace, $controller, $method, $protocols = array('GET'), $scope = "public", $comment = '', $args_expected = array())
+    public function register($namespace, $controller, $method, $protocols = array('GET'), $scope = "public", $comment = '', $args_expected = array())
     {
-        $wadl = $this->get_wadl();
-        //event_wadl_register_pull
+        $wadl = $this->get_tadl();
+        // event_wadl_register_pull
+        // todo write to db
         $wadl[$scope][$namespace][$controller]['methods'][$method]['namespace'] = $namespace;
         $wadl[$scope][$namespace][$controller]['methods'][$method]['controller'] = $controller;
         $wadl[$scope][$namespace][$controller]['methods'][$method]['comment'] = $comment;
         $wadl[$scope][$namespace][$controller]['methods'][$method]['args'] = $args_expected;
         $wadl[$scope][$namespace][$controller]['methods'][$method]['protocols'] = $protocols;
         $this->fw->set('WADL', $wadl);
-        //event_wadl_register_return
+        // event_wadl_register_return
     }
 }

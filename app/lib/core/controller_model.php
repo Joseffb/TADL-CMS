@@ -34,6 +34,12 @@ class controller_model extends \Prefab
     public function test () {
         echo "test";
     }
+
+    public function beforeRoute() {
+        //check authenticatation here
+        echo "test routing";
+    }
+
     public function get_data_as_object(array $options)
     {
         /*

@@ -20,44 +20,52 @@ class json extends \core\controller_model
 
     function get()
     {
-        return $this->process_request();
+        return $this->process_request('GET');
     }
 
     function post()
     {
-        return $this->process_request();
+        return $this->process_request('POST');
     }
 
     function put()
     {
-        return $this->process_request();
+        return $this->process_request('PUT');
     }
 
     function delete()
     {
-        return $this->process_request();
+        return $this->process_request('DELETE');
     }
 
-    function process_request($protocol = "GET")
+    function process_request($protocol = "ALL")
     {
         $props = http::get_params();
-        $wadl = new wadl();
-        $w = $wadl->get_wadl('exposed');
+        $wadl = new tadl();
+        $w = $wadl->get_tadl('exposed');
         unset($props[0]);
         unset($props[1]);
         $namespace = "controllers"; //default namespace
-        $controller = array_shift($props);
-        $method = array_shift($props);
+        if(empty($props)) {
+            // If it's just a /json call then we want to show all the callable functions.
+            // Other wise it will show only the GET functions.
+            $protocol = "ALL";
+            $controller = 'tadl';
+            $method = 'show';
+        } else {
+            $controller = array_shift($props)?:'tadl';
+            $method = array_shift($props)?:'show';
+        }
         //debug::pe($w[$namespace][$controller]['methods'][$method]);
         //get namespace
         if (!empty($w[$namespace][$controller]['methods'][$method])) {
-            $mhd = $w[$namespace][$controller]['methods'][$method];
-            if (!in_array($protocol, $mhd['protocols'])) {
-                $retVal = false;
-            } else {
-                $retVal = $mhd;
-                $retVal['method'] = $method;
-            }
+                $mhd = $w[$namespace][$controller]['methods'][$method];
+                if ($protocol != "ALL" && !in_array($protocol, $mhd['protocols'])) {
+                    $retVal = false;
+                } else {
+                    $retVal = $mhd;
+                    $retVal['method'] = $method;
+                }
         } else {
             foreach ($w as $namespace => $con) {
                 foreach ($con as $c => $attrib) {

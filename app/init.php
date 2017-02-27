@@ -19,7 +19,8 @@ $fw->set( 'TEMPLATES_SITE', $fw->get( 'APP' ) . "ui/templates/" );
 
 $fw->config($fw->CONFIGS."load.cfg");
 
-$c = new \controllers\wadl();
-$c->register();
+//test of tadl. tadl will move to a db backed entries
+$c = new \controllers\tadl();
+$c->json_register();
 
 $fw->run();

@@ -37,5 +37,11 @@ class routes extends \core\controller_model {
         return $retVal;
     }
 
+    function process_routes() {
 
+    }
+
+    function register_route($url, $class, $protocol="GET", $options = null) {
+        $this->fw->route("$protocol /$url ", $class);
+    }
 }
