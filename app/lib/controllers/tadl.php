@@ -29,7 +29,6 @@ class tadl extends \core\controller_model
         //$i = new auth();
         foreach ($dir as $fileinfo) {
             $name = $namespace.str_replace(".php", "", $fileinfo->getFilename());
-            echo $name.'<br/>';
             if (!$fileinfo->isDot()) {
                 $class = new $name();
                 if (method_exists($class, 'json_register')) {
