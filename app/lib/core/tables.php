@@ -16,20 +16,13 @@ class tables extends \DB\Cortex
 {
     public $fw = FALSE;
     protected $fluid = false;
-    private $old_values = false;
 
     public function __construct()
     {
         $this->fw = \Base::instance();
         parent::__construct();
-        //save date record was modified.
-        $this->beforesave(function ($mapper) {
-            if ($this->fw->ENABLE_DETAILED_CHANGE_LOG) {
-                $this->$old_values = $mapper;
-            }
-        });
 
-        $this->aftersave(function ($mapper) {
+        $this->beforesave(function ($mapper) {
             if ($this->fw->ENABLE_CHANGE_LOG) {
                 if ($this->fw->ENABLE_DETAILED_CHANGE_LOG) {
                     $this->detail_audit_update($mapper);
@@ -71,7 +64,6 @@ class tables extends \DB\Cortex
         $results = $audit->load();
         $results->name = $mapper->table();
         $results->record_id = $mapper->id;
-
         $results->touch('modified');
         $results->modified_by = $this->fw->USER_ID ?: 0;
 
@@ -79,10 +71,10 @@ class tables extends \DB\Cortex
         $schema = new \DB\SQL\Schema($this->db);
         $fields = $schema->alterTable($mapper->table())->getCols(true);
         foreach ($fields as $fld) {
-            if ($this->old_values->$fld != $mapper->$fld) {
+            if ($mapper->$fld->initial != $mapper->$fld->current) {
                 $results->field_name = $fld;
-                $results->old_values = $this->old_values->$fld;
-                $results->new_values = $mapper->$fld;
+                $results->old_values = $mapper->$fld->initial;
+                $results->new_values = $mapper->$fld->current;
             }
         }
         $results->save();

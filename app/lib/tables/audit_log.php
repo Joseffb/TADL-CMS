@@ -6,7 +6,7 @@ use core\db_connect;
 
 class audit_log extends \core\tables
 {
-    protected $table = 'audit_log';
+    protected $table = __CLASS__;
 
     public function __construct($prefix = FALSE)
     {
@@ -45,6 +45,8 @@ class audit_log extends \core\tables
                 'default' => 'CUR_STAMP',
             ),
         );
+
+        $this->fieldConf = array_merge($this->fieldConf, $this->get_fieldConf());
         $this->fw = \Base::instance();
 
         //Use this way if you want a secondary database;

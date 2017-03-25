@@ -20,12 +20,32 @@ class tadl extends \core\controller_model
         parent::__construct();
     }
 
-    public function json_register()
+    public static function load_tadl($directory = null, $namespace = 'controllers\\') {
+        echo "here";
+        $t = new tadl();
+        $directory= $directory?:$t->fw->CONTROLLERS;
+        $dir = new \DirectoryIterator($directory);
+        $retVal = array();
+        //$i = new auth();
+        foreach ($dir as $fileinfo) {
+            $name = $namespace.str_replace(".php", "", $fileinfo->getFilename());
+            echo $name.'<br/>';
+            if (!$fileinfo->isDot()) {
+                $class = new $name();
+                if (method_exists($class, 'json_register')) {
+                    $name::json_register();
+                }
+            }
+        }
+    }
+
+    public static function json_register()
     {
         //event_tadl_register_before_submit
         //todo maybe \core\controller_model should magically register these for its children?
-        $this->register('controllers', 'tadl', 'show', array('GET'), 'exposed', 'sends wadl to json output');
-        $this->register('controllers', 'tadl', 'get_wadl', array('GET'), 'public','gets wadl registrations',
+
+        self::register('controllers', 'tadl', 'show', array('GET'), 'exposed', 'sends wadl to json output');
+        self::register('controllers', 'tadl', 'get_wadl', array('GET'), 'public','gets wadl registrations',
             array(
                 array('name' => 'scope',
                     'type' => 'string',
@@ -33,7 +53,7 @@ class tadl extends \core\controller_model
                 )
             )
         );
-        $this->register('controllers', 'tadl', 'wadl_register', array('GET'), 'public','adds new wadl registrations',
+        self::register('controllers', 'tadl', 'wadl_register', array('GET'), 'public','adds new wadl registrations',
             array(
                 array('name' => 'namespace', 'type' => 'string'),
                 array('name' => 'controller', 'type' => 'string'),
@@ -59,7 +79,7 @@ class tadl extends \core\controller_model
     {
 
         //todo pull from db
-        $wadl = $this->fw->exists('WADL') ? $this->fw->get('WADL') : false;
+        $wadl = $this->fw->exists('TADL') ? $this->fw->get('TADL') : false;
         //event_get_wadl_pull
         if ($wadl && $scope != 'all') {
             $wadl = $wadl[$scope];
@@ -71,9 +91,10 @@ class tadl extends \core\controller_model
     /**
      * registers JSON calls with the WADL
      */
-    public function register($namespace, $controller, $method, $protocols = array('GET'), $scope = "public", $comment = '', $args_expected = array())
+    public static function register($namespace, $controller, $method, $protocols = array('GET'), $scope = "public", $comment = '', $args_expected = array())
     {
-        $wadl = $this->get_tadl();
+        $t = new tadl();
+        $wadl = $t->get_tadl();
         // event_wadl_register_pull
         // todo write to db
         $wadl[$scope][$namespace][$controller]['methods'][$method]['namespace'] = $namespace;
@@ -81,7 +102,7 @@ class tadl extends \core\controller_model
         $wadl[$scope][$namespace][$controller]['methods'][$method]['comment'] = $comment;
         $wadl[$scope][$namespace][$controller]['methods'][$method]['args'] = $args_expected;
         $wadl[$scope][$namespace][$controller]['methods'][$method]['protocols'] = $protocols;
-        $this->fw->set('WADL', $wadl);
+        $t->fw->set('TADL', $wadl);
         // event_wadl_register_return
     }
 }

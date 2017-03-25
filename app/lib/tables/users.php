@@ -6,10 +6,9 @@ use core\db_connect;
 
 class users extends \core\tables
 {
-    protected $table = 'users';
+    protected $table = __CLASS__;
     public function __construct($prefix = FALSE)
     {
-        $this->fieldConf = $this->get_fieldConf();
         ##### Setup Table Fields #####
         $this->fieldConf['user_name'] = array(
             'type' => 'VARCHAR256',
@@ -25,9 +24,10 @@ class users extends \core\tables
         );
         $this->fieldConf['is_enabled'] = array(
             'type' => 'INT1',
-            'nullable' => FALSE,
+            'nullable' => TRUE,
         );
 
+        $this->fieldConf = array_merge($this->fieldConf, $this->get_fieldConf());
         $this->fw = \Base::instance();
 
         //Use this way if you want a secondary database;

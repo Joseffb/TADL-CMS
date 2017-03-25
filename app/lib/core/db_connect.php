@@ -134,6 +134,7 @@ class db_connect extends \Prefab
                 if (!$this->fw->DEVOID('CACHE')) {
                     new \DB\SQL\Session($db, $session_table, true);
                 }
+                $type = "mssql";
                 break;
             case 'msaccess':
                 $test = $host != 'localhost' && !$user;
@@ -200,6 +201,7 @@ class db_connect extends \Prefab
                 if (!empty($db) && !$this->fw->DEVOID('CACHE')) {
                     new \DB\SQL\Session($db, $session_table, true);
                 }
+                $db_type = "mysql";
                 break;
             case 'mongo':
                 $options = array();
@@ -211,6 +213,7 @@ class db_connect extends \Prefab
                 if (!$this->fw->DEVOID('CACHE')) {
                     new \DB\MONGO\Session($db, $session_table, true);
                 }
+                $db_type = "mongo";
                 break;
             case 'jig':
                 $host = $host != 'localhost' ? $host : $fw->TEMP . "jig_data";
@@ -224,6 +227,7 @@ class db_connect extends \Prefab
                 if (!$this->fw->DEVOID('CACHE')) {
                     new \DB\JIG\Session($db, $session_table, true);
                 }
+                $db_type = "jig";
                 break;
             default:
                 //no idea how to handle so we do nothing and allow a return of db false.
@@ -235,14 +239,17 @@ class db_connect extends \Prefab
 
         //we keep track of all the database connection names (not object) in the registry.
         $databases = $this->fw->get('DATABASES');
-        $db_count = count($databases) - 1;
-        $databases[] = 'DB' . $db_count++;
+        //$dbcount = count($databases);
+        //$db_count = $dbcount != 0?$dbcount - 1:0;  todo -- do we need to reduce db count by one?
+        $db_count = count($databases);
+        $databases['DB_INFO'][] = array('DB' . $db_count => $type);
         $databases = $this->fw->set('DATABASES', $databases);
         //keep track of each individual db connection (object) in a variable DB0, DB1, DB2, etc
         $this->fw->set('DB' . $db_count, $db);
         //DB0 will get the honor of being the default DB. If the DEFAULT config switch is set to true this will overwrite DB0 as the default.
         if ($db && ($db_count == 0 || !empty($db_config['DB_DEFAULT']))) {
             $this->fw->set('DB', $db);
+            $this->fw->set('DB_TYPE', $type);
         }
         return $db;
     }

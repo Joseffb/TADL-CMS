@@ -92,26 +92,14 @@ class auth extends \core\controller_model
     public function login_via_user_password($user_value, $password_value = false, $field_value = "email")
     {
         $retVal = false;
-        $USER_TABLE = !$this->fw->DEVOID('DB_USERTABLE') ?$this->fw->GET('DB_USERTABLE'): false;
-        $USER_TABLE = $USER_TABLE && $this->check_if_table_exists($USER_TABLE) ? $USER_TABLE : 'users';
-
-        $field_value = $this->escape($field_value);
-        $where = " WHERE (" .$field_value . " = :value and is_enabled = 1";
-        $query = array(
-                'type' => "sql",
-                'query' => "SELECT * FROM " . $USER_TABLE . $where,
-                'bind_array' =>  array(":value"=>$user_value),
-        );
-        // run query mod event here
-        // event_login_via_user_password_alter_query
-
+        $class = $this->get_model_path(__CLASS__);
         //todo mongo and jig versions.
-        $response = $this->get_data_as_object($query);
-        if ( !empty($response) ) {
-            if($retVal = password_verify($password_value, $response[0]['password'])) { // returns true/false
+        $response = $class::lookup_user_authentication($user_value, $field_value);
+        if ( $response ) {
+            if($retVal = password_verify($password_value, $response[0]->password)) { // returns true/false
                 //set session vars here.
-                $this->authenticated_id = $response[0]['id'];
-                $this->authorization_level  = $this->get_authorization_by_user_id($response[0]['id']);
+                $this->authenticated_id = $response[0]->id;
+                $this->authorization_level  = $this->get_authorization_by_user_id($response[0]->id);
                 $this->authenticated_type = "user";
                 $this->fw->SET('USER_ID', "USER-".$this->authenticated_id);
                 $this->fw->SET('SESSION.authenticated_id', $this->authenticated_id);
@@ -127,28 +115,21 @@ class auth extends \core\controller_model
     public function login_via_api_key($public_key, $hash, $create_time)
     {
         $retVal = false;
+        $php_timeout = (int) ini_get("max_execution_time");
+        if($create_time > time()-$php_timeout || $create_time < time()+$php_timeout) {
+            //make sure that the request is somewhat recent. We use the system max time to ensure the call is from same session.
+            return $retVal;
+        }
 
-        $TABLE = !$this->fw->DEVOID('DB_APIKEYS') ?$this->fw->GET('DB_APIKEYS'): false;
-        $TABLE = $TABLE && $this->check_if_table_exists($TABLE) ? $TABLE : 'users';
+        $class = $this->get_model_path(__CLASS__);
+        $response = $class::lookup_api_authentication($public_key);
 
-        $field_value = 'api_key';
-        $where = " WHERE (" .$field_value . " = :value and is_enabled = 1";
-
-        $query = array(
-            'type' => "sql",
-            'query' => "SELECT * FROM " . $TABLE . $where,
-            'bind_array' =>  array(":value"=>$public_key),
-        );
-        // event_login_via_api_key_alter_query
-
-        //todo mongo and jig versions.
-        $response = $this->get_data_as_object($query);
         if ( !empty($response) ) {
             //todo - figure this out with real crypto solution
-                if( md5($create_time . $response[0]['private_key']) == $hash) {
+                if( md5($create_time . $response[0]->private_key) == $hash) {
                     //set session vars here.
-                    $this->authenticated_id = $response[0]['id'];
-                    $this->authorization_level  = $this->get_authorization_by_key_id($response[0]['id']);
+                    $this->authenticated_id = $response[0]->id;
+                    $this->authorization_level  = $this->get_authorization_by_key_id($response[0]->id);
                     $this->authenticated_type = "api";
                     $this->fw->SET('USER_ID', "APIKEY-".$this->authenticated_id);
                     $this->fw->SET('SESSION.authenticated_id', $this->authenticated_id);

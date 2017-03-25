@@ -39,6 +39,22 @@ class controller_model extends \Prefab
         //check authenticatation here
         echo "test routing";
     }
+    public function get_model_path($class_name, $namespace = false, $db_type = false) {
+        if($namespace) {
+            $namespace = $namespace."\\";
+            $class_name = str_replace($namespace, '',$class_name);
+        }
+        $db_type=$db_type?:$this->fw->DB_TYPE;
+        $is_sql = $db_type != "jig"  &&  $db_type != "mongo";
+        $path = "\\models\\".$db_type."\\".$class_name;
+        if($is_sql && $db_type != 'mysql') {
+            if(!class_exists($path)) {
+                //allow other sql to default to the mysql variant if there are missing routes for that sql variant.
+                $path = "\\models\\mysql\\".$class_name;
+            }
+        }
+        return $path;
+    }
 
     public function get_data_as_object(array $options)
     {
@@ -53,28 +69,28 @@ class controller_model extends \Prefab
          * )
          */
         $retVal = false;
-        if (!$this->fw->devoid($options['table']) && !$this->check_if_table_exists($options['table'])) {
+        if (!empty($options['table']) && !$this->check_if_table_exists($options['table'])) {
             //security check -- make sure the table is in the DB we are have configured and not in the system db or elsewhere.
             return $retVal;
         }
-        $DB = !$this->fw->devoid($options['DB']) ? $this->fw->get($options['DB']) : $this->db;
+        $DB = !empty($options['DB']) ? $this->fw->get($options['DB']) : $this->db;
 
         switch ($options['type']) {
             // Use this for reading and pulling data from the db.
             case 'sql':
                 //Query logic
-                $query = !$this->fw->devoid($options['query']) ? $options['query'] : false;
+                $query = !empty($options['query']) ? $options['query'] : false;
                 if (!$query && !$this->fw->devoid($options['table'])) {
                     return false;
                 } elseif (!$query) {
                     $query = "SELECT * FROM " . $options['table'];
                     //todo try to create a where statement id binding is filled in.
                 }
-                $binding = !$this->fw->devoid($options['bind_array']) ? $options['bind_array'] : null;
+                $binding = !empty($options['bind_array']) ? $options['bind_array'] : null;
 
                 //Pagination logic
                 $limit = null;
-                if (!$this->fw->devoid($options['pagination']['start'])) {
+                if (!empty($options['pagination']['start'])) {
                     $start = $options['pagination']['start'];
                     $limit = " LIMIT $start";
                     if (!$this->fw->devoid($options['pagination']['length'])) {
@@ -82,8 +98,8 @@ class controller_model extends \Prefab
                         $limit .= ", $length";
                     }
                 }
-
-                if (!$this->fw->devoid($array = $DB->exec($query . $limit, $binding))) {
+                $array = $DB->exec($query . $limit, $binding);
+                if (!empty($array)) {
                     //create an object of results for us to work with;
                     $retVal = json_decode(json_encode($array), FALSE);
                 }
@@ -266,46 +282,29 @@ class controller_model extends \Prefab
         return $retVal;
     }
 
-    public function update_each_field_type ($tbl_name, $DB = false) {
+    public function update_each_field_type ($tbl_name, $check_only = false, $DB = false) {
         $DB = $DB ?: $this->db;
         if (!$DB) {
             return false;
         }
         $retVal=false;
         $schema = new \DB\SQL\Schema($DB);
-        $child = get_class($tbl_name);
+        $child = get_class("\\tables\\".$tbl_name);
         $table_name = $child->$table;
         $cortex_field_definitions = $child->$fieldConf;
         $tableInfo = $schema->alterTable($table_name)->getCols(true);
         foreach($cortex_field_definitions as $columnName => $fieldConf){
             $condition = $tableInfo[$columnName] == $fieldConf['type'];
             $condition = $condition + $schema->isCompatible( $fieldConf['type'], $columnName );
-            if($condition) {
+            if($check_only) {
+                $retVal = $condition;
+            } else if($condition) {
                 $tableInfo->updateColumn($columnName, $fieldConf['type'], true);
                 $tableInfo->build();
                 $retVal = true;
             }
         }
         return $retVal;
-    }
-    public function check_each_field_type ($tbl_name, $DB = false, $check_if_can_be_updated = false ) {
-        $DB = $DB ?: $this->db;
-        if (!$DB) {
-            return false;
-        }
-        $condition = false;
-        $schema = new \DB\SQL\Schema($DB);
-        $child = get_class($tbl_name);
-        $table_name = $child->$table;
-        $cortex_field_definitions = $child->$fieldConf;
-        $tableInfo = $schema->alterTable($table_name)->getCols(true);
-        foreach($cortex_field_definitions as $columnName => $fieldConf){
-            $condition = $tableInfo[$columnName] == $fieldConf['type'];
-            if($check_if_can_be_updated) {
-                $condition = $condition + $schema->isCompatible( $fieldConf['type'], $columnName );
-            }
-        }
-        return $condition;
     }
 
     public function escape($value)

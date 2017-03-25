@@ -11,16 +11,26 @@ $fw->set( 'ROOT', str_replace( 'public', 'app/', __DIR__ ) ); //we are fixing th
 $fw->set( 'APP', $fw->get( 'ROOT' )."/" );
 $fw->set( 'CONFIGS', $fw->get( 'APP' ) . "configs/" );
 $fw->set( 'LIB', $fw->get( 'APP' ) . "lib/" );
-$fw->set( 'UI', $fw->get( 'APP' ) . "ui/" );
+$fw->set( 'CONTROLLERS', $fw->get( 'LIB' ) . "controllers/" );
+$fw->set( 'CORE', $fw->get( 'LIB' ) . "core/" );
+$fw->set( 'MODELS', $fw->get( 'LIB' ) . "models/" );
+$fw->set( 'TABLES', $fw->get( 'LIB' ) . "tables/" );
+$fw->set( 'UTIL', $fw->get( 'LIB' ) . "util/" );
+$fw->set( 'UI', $fw->get( 'LIB' ) . "ui/" );
 $fw->set( 'TEMPLATES_JSON', $fw->get( 'APP' ) . "ui/json/" );
 $fw->set( 'TEMPLATES_EMAIL', $fw->get( 'APP' ) . "ui/emails/" );
 $fw->set( 'TEMPLATES_SITE', $fw->get( 'APP' ) . "ui/templates/" );
 //define global variables - stop
 
 $fw->config($fw->CONFIGS."load.cfg");
+$fw->set("SITE_ID", 0);
+
+//$a = new \controllers\routes();
+//$a->determine_site_id();
 
 //test of tadl. tadl will move to a db backed entries
-$c = new \controllers\tadl();
-$c->json_register();
-
+\controllers\tadl::load_tadl();
+/*echo "<pre>";
+var_dump($fw->get('ROUTES'));
+echo "/pre>";*/
 $fw->run();

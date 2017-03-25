@@ -15,13 +15,8 @@
 
 	public function __construct() {
 	  $f3 = $this->f3 = \Base::instance();
-	  $this->prefix = $f3->exists('PREFIX') ? $f3->get('PREFIX') : FALSE;
-
 	}
 
-	public function loadFile($className, $type) {
-	  //type is either controllers, models, or tables
-	  include_once($this->f3->APP."/".$this->f3->$type . "/" . $className . ".php");
-	}
+
 
   }
