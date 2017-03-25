@@ -21,7 +21,6 @@ class tadl extends \core\controller_model
     }
 
     public static function load_tadl($directory = null, $namespace = 'controllers\\') {
-        echo "here";
         $t = new tadl();
         $directory= $directory?:$t->fw->CONTROLLERS;
         $dir = new \DirectoryIterator($directory);
