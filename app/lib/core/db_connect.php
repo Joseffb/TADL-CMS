@@ -24,6 +24,9 @@ class db_connect extends \Prefab
         if (!$fw->devoid('DB_COUNT')) {
             $cnt = $fw->DB_COUNT;
         } else {
+            if($fw->devoid('database')) {
+                $fw->config($fw->CONFIGS."environment.ini");
+            }
             foreach ($fw->database as $obj) {
                 if (is_array($obj)) {
                     $cnt++;

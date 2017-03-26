@@ -22,8 +22,15 @@ $fw->set( 'THEMES_EMAIL', $fw->get( 'UI' ) . "emails/" );
 $fw->set( 'THEMES_SITE', $fw->get( 'UI' ) . "themes/" );
 //define global variables - stop
 
+//Do not modify this config unless you know what you're doing
+$fw->config($fw->CORE."system.ini");
+//###########################################################
+
+//user configs
 $fw->config($fw->CONFIGS."load.cfg");
-$fw->set("SITE_ID", 0);
+
+//initiate system
 \controllers\tadl::load_tadl();
 
+//display site
 $fw->run();
