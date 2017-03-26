@@ -45,7 +45,7 @@ class audit_log extends \core\tables
                 'default' => 'CUR_STAMP',
             ),
         );
-
+        $this->table = str_replace(__NAMESPACE__."\\", '',$this->table);
         $this->fieldConf = array_merge($this->fieldConf, $this->get_fieldConf());
         $this->fw = \Base::instance();
 

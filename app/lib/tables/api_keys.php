@@ -56,7 +56,7 @@ class api_keys extends \core\tables
             'type' => 'INT4',
             'nullable' => TRUE,
         );
-
+        $this->table = str_replace(__NAMESPACE__."\\", '',$this->table);
         $this->fieldConf = array_merge($this->fieldConf, $this->get_fieldConf());
 
         $this->fw = \Base::instance();

@@ -25,12 +25,12 @@ class routes extends \core\controller_model {
         $this->fw = \Base::instance();
     }
 
-    public static function lookup_site_id ($url = false) {
+    public static function lookup_site_by_url ($url = false) {
         //we actually want to get what was requested.
         $site = $url?:$_SERVER['HTTP_HOST'];
         $query = array(
             'type' => "sql",
-            'query' => "SELECT * FROM sites WHERE site_URL = ? LIMIT 1", //should only bring back one result per site
+            'query' => "SELECT * FROM sites WHERE url = ? LIMIT 1", //should only bring back one result per site
             'bind_array' =>  array($site),
         );
         // run query mod event here
@@ -45,4 +45,21 @@ class routes extends \core\controller_model {
     }
 
 
+    public static function lookup_site_by_id ($id = false) {
+        //we actually want to get what was requested.
+        $query = array(
+            'type' => "sql",
+            'query' => "SELECT * FROM sites WHERE id = ? LIMIT 1", //should only bring back one result per site
+            'bind_array' =>  array($id),
+        );
+        // run query mod event here
+        // event_login_via_user_password_alter_query
+        $a = new controller_model();
+        $response = $a->get_data_as_object($query);
+        $retVal = false;
+        if($response) {
+            $retVal = $response;
+        }
+        return $retVal;
+    }
 }

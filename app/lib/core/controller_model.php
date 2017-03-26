@@ -15,6 +15,7 @@ class controller_model extends \Prefab
 {
 
     public $fw, $db;
+    protected $queries = array();
 
     public function __construct()
     {
@@ -35,10 +36,7 @@ class controller_model extends \Prefab
         echo "test";
     }
 
-    public function beforeRoute() {
-        //check authenticatation here
-        echo "test routing";
-    }
+
     public function get_model_path($class_name, $namespace = false, $db_type = false) {
         if($namespace) {
             $namespace = $namespace."\\";
@@ -78,6 +76,9 @@ class controller_model extends \Prefab
         switch ($options['type']) {
             // Use this for reading and pulling data from the db.
             case 'sql':
+                if(empty($options['query_name'])) {
+                    $options['query_name'] = $options['query'];
+                }
                 //Query logic
                 $query = !empty($options['query']) ? $options['query'] : false;
                 if (!$query && !$this->fw->devoid($options['table'])) {
@@ -98,7 +99,14 @@ class controller_model extends \Prefab
                         $limit .= ", $length";
                     }
                 }
-                $array = $DB->exec($query . $limit, $binding);
+
+                if((!empty($this->queries['name']) && in_array($options['query_name'], $this->queries['name'])) && empty($options['requery'])) {
+                    $array = $this->queries['name'][$options['query_name']]['object'];
+                } else {
+                    $array = $DB->exec($query . $limit, $binding);
+                    $this->queries['name'][$options['query_name']]['object'] = $array;
+                }
+
                 if (!empty($array)) {
                     //create an object of results for us to work with;
                     $retVal = json_decode(json_encode($array), FALSE);

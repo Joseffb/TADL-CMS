@@ -93,7 +93,7 @@ class json extends \core\controller_model
             $c = new $class();
             $method = $retVal['method'];
 
-            return $c->$method($args);
+            return \utils\json::send_json(200,array('data'=>$c->$method($args)));
         }
         return $retVal;
 

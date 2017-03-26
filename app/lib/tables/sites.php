@@ -31,7 +31,17 @@ class sites extends \core\tables
         $this->fieldConf['theme'] = array(
             'type' => 'VARCHAR256',
             'nullable' => FALSE,
-            'default' => 'default',
+            'default' => 'Alice',
+        );
+        $this->fieldConf['admin_theme'] = array(
+            'type' => 'VARCHAR256',
+            'nullable' => FALSE,
+            'default' => 'RedQueen',
+        );
+        $this->fieldConf['mobile_theme'] = array(
+            'type' => 'VARCHAR256',
+            'nullable' => FALSE,
+            'default' => 'MadHatter',
         );
         $this->fieldConf['is_enabled'] = array(
             'type' => 'INT1',
@@ -43,7 +53,7 @@ class sites extends \core\tables
             'nullable' => false,
             'default' => 'CUR_STAMP',
         );
-
+        $this->table = str_replace(__NAMESPACE__."\\", '',$this->table);
         $this->fieldConf = array_merge($this->fieldConf, $this->get_fieldConf());
 
 

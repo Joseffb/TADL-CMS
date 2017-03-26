@@ -37,7 +37,6 @@ class setup extends \core\controller_model
             if (!$fileinfo->isDot()) {
                 $name = str_replace(".php", "", $fileinfo->getFilename());
                 $class = "\\tables\\" . $name;
-                echo $name;
                 $this->table_install($class);
                 $retVal[]['name']=$name;
                 $class = NULL;

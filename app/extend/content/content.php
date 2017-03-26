@@ -4,33 +4,32 @@ namespace tables;
 
 use core\db_connect;
 
-class site_users extends \core\tables
+class content extends \core\tables
 {
     protected $table = __CLASS__;
     public function __construct($prefix = FALSE)
     {
         ##### Setup Table Fields #####
-        $this->fieldConf['user_id'] = array(
-            'type' => 'INT4',
+        $this->fieldConf['content_type'] = array(
+            'type' => 'VARCHAR256',
             'nullable' => FALSE,
         );
-        $this->fieldConf['site_id'] = array(
-            'type' => 'INT4',
+        $this->fieldConf['content_title'] = array(
+            'type' => 'VARCHAR256',
             'nullable' => FALSE,
         );
-        $this->fieldConf['user_role_id'] = array(
-            'type' => 'INT4',
+        $this->fieldConf['content_body'] = array(
+            'type' => 'VARCHAR256',
             'nullable' => FALSE,
         );
-        $this->fieldConf['is_enabled'] = array(
+        $this->fieldConf['content_author'] = array(
             'type' => 'INT1',
             'nullable' => FALSE,
         );
-        $this->table = str_replace(__NAMESPACE__."\\", '',$this->table);
         $this->fieldConf = array_merge($this->fieldConf, $this->get_fieldConf());
-
+        $this->table = str_replace(__NAMESPACE__."\\", '',$this->table);
         $this->fw = \Base::instance();
-
+        $this->table = $this->fw->SITE_ID."_".$this->table;
         //Use this way if you want a secondary database;
         //sets all db's up from config, and returns default
         //$this->db = $this->fw->exists('DB2') ?$this->fw->get('DB2'): core_DBC::dbc(2);

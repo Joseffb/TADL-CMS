@@ -16,21 +16,14 @@ $fw->set( 'CORE', $fw->get( 'LIB' ) . "core/" );
 $fw->set( 'MODELS', $fw->get( 'LIB' ) . "models/" );
 $fw->set( 'TABLES', $fw->get( 'LIB' ) . "tables/" );
 $fw->set( 'UTIL', $fw->get( 'LIB' ) . "util/" );
-$fw->set( 'UI', $fw->get( 'LIB' ) . "ui/" );
-$fw->set( 'TEMPLATES_JSON', $fw->get( 'APP' ) . "ui/json/" );
-$fw->set( 'TEMPLATES_EMAIL', $fw->get( 'APP' ) . "ui/emails/" );
-$fw->set( 'TEMPLATES_SITE', $fw->get( 'APP' ) . "ui/templates/" );
+$fw->set( 'UI', $fw->get( 'APP' ) . "ui/" );
+$fw->set( 'THEMES_JSON', $fw->get( 'UI' ) . "json/" );
+$fw->set( 'THEMES_EMAIL', $fw->get( 'UI' ) . "emails/" );
+$fw->set( 'THEMES_SITE', $fw->get( 'UI' ) . "themes/" );
 //define global variables - stop
 
 $fw->config($fw->CONFIGS."load.cfg");
 $fw->set("SITE_ID", 0);
-
-//$a = new \controllers\routes();
-//$a->determine_site_id();
-
-//test of tadl. tadl will move to a db backed entries
 \controllers\tadl::load_tadl();
-/*echo "<pre>";
-var_dump($fw->get('ROUTES'));
-echo "/pre>";*/
+
 $fw->run();

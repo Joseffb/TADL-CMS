@@ -15,29 +15,51 @@ namespace controllers;
 class routes extends \core\controller_model
 {
 
-    public $fw = null;
-    public $admin_theme = null;
-    public $site_theme = null;
-
     public function __construct()
     {
         parent::__construct();
-        $this->admin_theme = "admin";
-        $this->fw = \Base::instance();
+        $this->set_site_theme('Alice');
+        $this->set_admin_theme('RedQueen');
+        $this->set_mobile_theme('MadHatter');
+        $this->set_default_routes();
+        if($this->check_if_table_exists('sites')) {
+            //Tables most likely haven't been installed yet.
+            $this->determine_site_id();
+        }
     }
 
-    public function set_admin_theme($theme = "admin")
+    public function beforeRoute() {
+
+    }
+
+    public function set_admin_theme($theme = "RedQueen")
     {
         // todo : fire admin theme hook event
         //$theme = do_action('set_admin_theme')?:$theme;
         $this->fw->set("ADMIN_THEME", $theme);
+        // todo : fire admin theme hook event
+        //$theme = do_action('set_admin_theme')?:$theme;
+        $this->fw->set("ADMIN_THEME_URL", "themes/".$theme."/");
     }
 
-    public function set_site_theme($theme)
+    public function set_site_theme($theme = "Alice")
     {
         // todo : fire site theme hook event
         //$theme = do_action('set_site_theme')?:$theme;
         $this->fw->set("SITE_THEME", $theme);
+        // todo : fire admin theme hook event
+        //$theme = do_action('set_admin_theme')?:$theme;
+        $this->fw->set("SITE_THEME_URL",  "themes/".$theme."/");
+    }
+
+    public function set_mobile_theme($theme = "MadHatter")
+    {
+        // todo : fire site theme hook event
+        //$theme = do_action('set_site_theme')?:$theme;
+        $this->fw->set("MOBILE_THEME", $theme);
+        // todo : fire admin theme hook event
+        //$theme = do_action('set_admin_theme')?:$theme;
+        $this->fw->set("MOBILE_THEME_URL",  "themes/".$theme."/");
     }
 
     public function set_site_url($url)
@@ -81,8 +103,13 @@ class routes extends \core\controller_model
         $site = $_SERVER['HTTP_HOST'];
         //todo mongo and jig versions.
         $class = $this->get_model_path(__CLASS__, __NAMESPACE__);
-        ECHO $class;
-        $response = $class::lookup_site_id($site);
+        $response = $class::lookup_site_by_url($site);
+
+/*        echo "<pre>";
+        //echo debug_print_backtrace();
+        var_dump($response);
+        echo "</pre>";*/
+
         if ($response) {
             $this->set_site_id($response->id);
             $this->set_site_from_email($response->from_email);
@@ -90,7 +117,10 @@ class routes extends \core\controller_model
             $this->set_site_name($response->name);
             $this->set_site_url($response->url);
             $this->set_site_theme($response->theme);
+            $this->set_admin_theme($response->admin_theme);
+            $this->set_mobile_theme($response->mobile_theme);
         }
+
     }
 
     public function check_if_route_exist($route)
@@ -111,6 +141,38 @@ class routes extends \core\controller_model
             break;
         }
         return $retVal;
+    }
+
+    public function admin_root_route($fw) {
+        //$this->fw->set('THEME_CSS',theme::get_localized_css());
+        $this->fw->set('THEME_JS',theme::get_localized_js());
+        $theme = $fw->get('ADMIN_THEME_URL');
+        $view=new \View();
+        echo $view->render($theme.'index.php');
+    }
+
+    public function frontend_root_route($fw) {
+        //$this->fw->set('THEME_CSS',theme::get_localized_css());
+        $this->fw->set('THEME_JS',theme::get_localized_js());
+        $theme = $fw->get('SITE_THEME_URL');
+        $view=new \View();
+        echo $view->render($theme.'index.php');
+    }
+
+    public function mobile_root_route($fw) {
+        // should use browser sniffing
+    }
+
+
+    public function set_default_routes() {
+        //themes
+        $this->fw->route('GET @front_root: /*', 'controllers\routes->frontend_root_route');
+        $this->fw->route('GET @admin_root: /admin/*', 'controllers\routes->admin_root_route');
+        //$this->fw->route('GET @mobile_root: /mbl/*', 'controllers\routes->>mobile_root_route');
+
+        //asset and media files proxies
+        $this->fw->route('GET @template_assets:  /assets/*', 'controllers\media->assets');
+        $this->fw->route('GET @site_files: /file/*', 'controllers\media->files');
     }
 
     // Root pages:
