@@ -28,10 +28,6 @@ class routes extends \core\controller_model
         }
     }
 
-    public function beforeRoute() {
-
-    }
-
     public function set_admin_theme($theme = "RedQueen")
     {
         // todo : fire admin theme hook event
@@ -143,7 +139,7 @@ class routes extends \core\controller_model
         return $retVal;
     }
 
-    public function admin_root_route($fw) {
+    public function admin_root($fw) {
         //$this->fw->set('THEME_CSS',theme::get_localized_css());
         $this->fw->set('THEME_JS',theme::get_localized_js());
         $theme = $fw->get('ADMIN_THEME_URL');
@@ -151,7 +147,7 @@ class routes extends \core\controller_model
         echo $view->render($theme.'index.php');
     }
 
-    public function frontend_root_route($fw) {
+    public function frontend_root($fw) {
         //$this->fw->set('THEME_CSS',theme::get_localized_css());
         $this->fw->set('THEME_JS',theme::get_localized_js());
         $theme = $fw->get('SITE_THEME_URL');
@@ -166,8 +162,8 @@ class routes extends \core\controller_model
 
     public function set_default_routes() {
         //themes
-        $this->fw->route('GET @front_root: /*', 'controllers\routes->frontend_root_route');
-        $this->fw->route('GET @admin_root: /admin/*', 'controllers\routes->admin_root_route');
+        $this->fw->route('GET @front_root: /*', 'controllers\routes->frontend_root');
+        $this->fw->route('GET @front: /cp*', 'controllers\routes->admin_root');
         //$this->fw->route('GET @mobile_root: /mbl/*', 'controllers\routes->>mobile_root_route');
 
         //asset and media files proxies
@@ -246,17 +242,5 @@ class routes extends \core\controller_model
         );
     }
 
-
-    function admin_root()
-    {
-        //todo check if you are a) authenticated, and b) have access to admin. if not forward to homepage or login page.
-        //get admin theme.
-
-    }
-
-    function home_root()
-    {
-
-    }
 
 }
