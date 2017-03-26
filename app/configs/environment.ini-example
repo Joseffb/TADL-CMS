@@ -5,6 +5,7 @@ DEBUG = 3
 DB_COUNT=3
 TEMP=../temp/
 CACHE = TRUE
+ENABLE_AUDIT_LOG = TRUE
 
 [database]
 DB_TYPE=MYSQL
