@@ -26,6 +26,9 @@ class db_connect extends \Prefab
         } else {
             if($fw->devoid('database')) {
                 $fw->config($fw->CONFIGS."environment.ini");
+                if($fw->devoid('database')) {
+                    die('Error: DB configuration missing.');
+                }
             }
             foreach ($fw->database as $obj) {
                 if (is_array($obj)) {
