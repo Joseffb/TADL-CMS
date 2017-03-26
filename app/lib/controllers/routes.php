@@ -166,7 +166,8 @@ class routes extends \core\controller_model
 
     public function set_default_routes() {
         //themes
-
+        $this->fw->route('GET @front_root: /*', 'controllers\routes->frontend_root_route');
+        $this->fw->route('GET @admin_root: /admin/*', 'controllers\routes->admin_root_route');
         //$this->fw->route('GET @mobile_root: /mbl/*', 'controllers\routes->>mobile_root_route');
 
         //asset and media files proxies
