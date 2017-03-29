@@ -165,10 +165,6 @@ class routes extends \core\controller_model
         $this->fw->route('GET @front_root: /*', 'controllers\routes->frontend_root');
         $this->fw->route('GET @front: /cp*', 'controllers\routes->admin_root');
         //$this->fw->route('GET @mobile_root: /mbl/*', 'controllers\routes->>mobile_root_route');
-
-        //asset and media files proxies
-        $this->fw->route('GET @template_assets:  /assets/*', 'controllers\media->assets');
-        $this->fw->route('GET @site_files: /file/*', 'controllers\media->files');
     }
 
     // Root pages:

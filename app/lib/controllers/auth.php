@@ -85,8 +85,6 @@ class auth extends \core\controller_model
         }
         // run event_login_alter_result
         return $retVal;
-
-
     }
 
     public function login_via_user_password($user_value, $password_value = false, $field_value = "email")
@@ -156,6 +154,6 @@ class auth extends \core\controller_model
             header( 'HTTP/1.0 401 Unauthorized' );
             echo "<script>window.location = '".$login."';</script>";
         }
-        return true;
+        return 'You have been logged out';
     }
 }
