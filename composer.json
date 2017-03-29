@@ -1,0 +1,25 @@
+{
+  "name": "vendor_name/package_name",
+  "description": "description_text",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "author's name",
+      "email": "email@example.com"
+    }
+  ],
+  "require": {
+    "bcosca/fatfree": "3.6.0",
+    "martynbiz/phpdebugbar": "dev-master",
+    "ikkez/f3-events": "dev-master",
+    "ikkez/f3-cortex": "v1.4.3",
+    "ikkez/f3-assets": "v1.0.0",
+    "ikkez/f3-fal": "v0.7.2",
+    "ikkez/f3-mailer": "v1.0.0",
+    "ikkez/f3-opauth": "dev-master",
+    "ikkez/f3-schema-builder": "v2.2.0",
+    "xfra35/f3-access": "v1.0.0",
+    "xfra35/f3-cron": "v1.1.0"
+  }
+}

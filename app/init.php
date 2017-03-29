@@ -1,7 +1,8 @@
 <?php
 
 // Kickstart the framework
-$fw= require('../f3/base.php');
+require_once("../vendor/autoload.php");
+$fw= base::instance();
 if ((float)PCRE_VERSION<7.9)
     trigger_error('PCRE version is out of date');
 
