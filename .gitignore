@@ -1,4 +1,3 @@
 environment.ini
 .idea/*
-/temp
-/temp/cache
+/temp/*

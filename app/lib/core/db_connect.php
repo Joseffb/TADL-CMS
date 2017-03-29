@@ -13,11 +13,12 @@ class db_connect extends \Prefab
     public $port = false;
     public $db_name = false;
     public $db = false;
+    public $event = false;
 
     public function __construct()
     {
         $this->fw = $fw = \Base::instance();
-
+        $this->event = new \Event();
         // support multiple db configurations.
         // As such we need to know the number of databases to loop while
         $cnt = 0;
@@ -27,7 +28,9 @@ class db_connect extends \Prefab
             if($fw->devoid('database')) {
                 $fw->config($fw->CONFIGS."environment.ini");
                 if($fw->devoid('database')) {
-                    die('Error: DB configuration missing.');
+                    $msg = 'Error: DB configuration missing.';
+                    $msg = $this->event->emit('db_not_config_found_message',$msg);
+                    die($msg);
                 }
             }
             foreach ($fw->database as $obj) {
@@ -52,6 +55,16 @@ class db_connect extends \Prefab
                 }
             }
         }
+
+        //allows a plugin to add a database config programmaticly
+        $extra_db_configs = false;
+        $extra_db_configs = $this->event->emit('db_extra_db_config',$extra_db_configs);
+        if(!empty($extra_db_configs)) {
+            foreach($extra_db_configs as $db_config) {
+                $this->connect_db($db_config);
+            }
+        }
+
     }
         static function boot($dbID = 0)
     {
@@ -68,14 +81,15 @@ class db_connect extends \Prefab
         $pass = !empty($db_config['DB_PASSWORD']) ? true : false;
         $type = !empty($db_config['DB_TYPE']) ? true : false;
         $port = !empty($db_config['DB_PORT']) ? true : false;
-
+        $retVal = false;
         //echo !$this->fw->devoid($db_config['DB_USER']) . "name: ".$db_config['DB_NAME']." | user ". $db_config['DB_USER'] ." | pass ".$db_config['DB_PASSWORD']. " | type ".$db_config['DB_TYPE']. " <br/>";
         if ($name && $user && $pass && $type && $port) {
-            return 99;
+            $retVal = 99;
         } elseif ($name && $user && $pass && $type) {
-            return 88;
+            $retVal = 88;
         }
-        return false;
+        $retVal = $this->event->emit('db_parse_environment_config',$retVal);
+        return $retVal;
     }
 
     public
@@ -84,7 +98,9 @@ class db_connect extends \Prefab
         $session_table = $this->fw->exists('SESSION_TABLE_NAME') ? $this->fw->SESSION_TABLE_NAME : "SESSION_DATA";
         if (!$this->fw->DEVOID('CACHE')) {
             //todo determine if this is a local cache
-            new \Session();
+            $localCache = 'Session';
+            $localCache = '\\'.$this->event->emit('db_name_of_local_cache',$localCache);
+            new $localCache();
         }
         $fw = $this->fw;
         $host = !empty($db_config['DB_HOST']) ? $db_config['DB_HOST'] : 'localhost';
@@ -98,9 +114,7 @@ class db_connect extends \Prefab
         switch ($type) {
             case 'sqllite':
                 $db = $host ? new \DB\SQL('sqlite:' . $host) : false;
-                if (!$this->fw->DEVOID('CACHE')) {
-                    new \DB\SQL\Session($db, $session_table, true);
-                }
+
                 break;
             case 'sqlsrv':
                 $test = !$host &&
@@ -110,20 +124,15 @@ class db_connect extends \Prefab
                 $options = array();
                 $port = !$port ? "," . $port : null;
                 $db = $test ? new \DB\SQL($type . ':Server=' . $host . $port . ';dbname=' . $db_name, $user_name, $pass, $options) : false;
-                if (!$this->fw->DEVOID('CACHE')) {
-                    new \DB\SQL\Session($db, $session_table, true);
-                }
                 break;
             case 'odbc_driver':
                 $test = !$host &&
                     !$name &&
                     !$user &&
                     !$pass;
-                $port = $port ?: 50000;
+                //$port = $port ?: 50000;
                 $db = $test ? new \DB\SQL('odbc:' . $host) : false;
-                if (!$this->fw->DEVOID('CACHE')) {
-                    new \DB\SQL\Session($db, $session_table, true);
-                }
+
                 break;
             case 'mssql':
             case 'dblib':
@@ -137,15 +146,11 @@ class db_connect extends \Prefab
                 }
                 $test = !$host && !$name;
                 $db = $test ? new \DB\SQL($type . ':host=' . $host . ';dbname=' . $db_name, null, null, $options) : false;
-                if (!$this->fw->DEVOID('CACHE')) {
-                    new \DB\SQL\Session($db, $session_table, true);
-                }
                 $type = "mssql";
                 break;
             case 'msaccess':
                 $test = $host != 'localhost' && !$user;
                 $db = $test ? new \DB\SQL('odbc:Driver={Microsoft Access Driver (*.mdb)};Dbq=' . $host . ';Uid=' . $user) : false;
-                new \DB\SQL\Session($db, $session_table, true);
                 break;
             case 'Oracle':
                 $test = !$host && !$name;
@@ -155,9 +160,6 @@ class db_connect extends \Prefab
                 } else {
                     $db = $test ? new \DB\SQL('oci:dbname=//' . $host . ':' . $port . '/' . $name) : false;
                 }
-                if (!$this->fw->DEVOID('CACHE')) {
-                    new \DB\SQL\Session($db, $session_table, true);
-                }
                 break;
             case 'IBM_DB2':
                 $test = !$host &&
@@ -166,9 +168,7 @@ class db_connect extends \Prefab
                     !$pass;
                 $port = $port ?: 50000;
                 $db = $test ? new \DB\SQL('odbc:DRIVER={IBM DB2 ODBC DRIVER};HOSTNAME=' . $host . ';PORT=' . $port . ';DATABASE=' . $name . ';PROTOCOL=TCPIP;UID=' . $user . ';PWD=' . $pass . ';') : false;
-                if (!$this->fw->DEVOID('CACHE')) {
-                    new \DB\SQL\Session($db, $session_table, true);
-                }
+
                 break;
             case 'pgsql':
                 $test = !$host &&
@@ -177,9 +177,7 @@ class db_connect extends \Prefab
                     !$pass;
                 $port = $port ?: 5432;
                 $db = $test ? new \DB\SQL('pgsql:host=' . $host . ';port=' . $port . ';dbname=' . $name . ';user=' . $user . ';password=' . $pass) : false;
-                if (!$this->fw->DEVOID('CACHE')) {
-                    new \DB\SQL\Session($db, $session_table, true);
-                }
+
                 break;
             case 'mysql':
                 $test = $host &&
@@ -187,7 +185,7 @@ class db_connect extends \Prefab
                     $user &&
                     $pass;
 
-                $port = $port ?: 3302;
+                $port = $port ?: 3306;
                 $options = array();
 
                 if (!empty($db_config['DB_ERRMODE'])) {
@@ -201,13 +199,7 @@ class db_connect extends \Prefab
                 if (!empty($db_config['DB_MYSQL_COMPRESS']) && $type == "mysql") {
                     $options[\PDO::MYSQL_ATTR_COMPRESS] = TRUE;
                 }
-
                 $db = $test ? new \DB\SQL($type . ':host=' . $host . ';port=' . $port . ';dbname=' . $name, $user, $pass, $options) : false;
-
-                if (!empty($db) && !$this->fw->DEVOID('CACHE')) {
-                    new \DB\SQL\Session($db, $session_table, true);
-                }
-                $db_type = "mysql";
                 break;
             case 'mongo':
                 $options = array();
@@ -216,10 +208,6 @@ class db_connect extends \Prefab
                     !$port &&
                     !$name;
                 $db = $test ? new \DB\MONGO('mongodb://' . $host . ':' . $port, $name) : false;
-                if (!$this->fw->DEVOID('CACHE')) {
-                    new \DB\MONGO\Session($db, $session_table, true);
-                }
-                $db_type = "mongo";
                 break;
             case 'jig':
                 $host = $host != 'localhost' ? $host : $fw->TEMP . "jig_data";
@@ -230,10 +218,6 @@ class db_connect extends \Prefab
                     $format = \DB\Jig::FORMAT_JSON;
                 }
                 $db = $test ? new \DB\Jig ($host, $format) : false;
-                if (!$this->fw->DEVOID('CACHE')) {
-                    new \DB\JIG\Session($db, $session_table, true);
-                }
-                $db_type = "jig";
                 break;
             default:
                 //no idea how to handle so we do nothing and allow a return of db false.
@@ -241,6 +225,19 @@ class db_connect extends \Prefab
         }
         if (!$db) {
             return false;
+        }
+
+        if (!$this->fw->DEVOID('CACHE')) {
+            $session_db = $this->event->emit('db_session_db', $db);
+            $session_table = $this->event->emit('db_session_table_name', $session_table);
+            $session_callable = $this->event->emit('db_session_table_name', true);
+            if($type == 'mongo') {
+                new \DB\MONGO\Session($session_db, $session_table, $session_callable);
+            } elseif($type == 'jig') {
+                new \DB\JIG\Session($session_db, $session_table, $session_callable);
+            } else {
+                new \DB\SQL\Session($session_db, $session_table, $session_callable);
+            }
         }
 
         //we keep track of all the database connection names (not object) in the registry.
