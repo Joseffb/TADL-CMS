@@ -107,9 +107,9 @@ class controller_model extends \Prefab
                 if ((!empty($this->queries['name']) && in_array($options['query_name'], $this->queries['name'])) && empty($options['requery'])) {
                     $array = $this->queries['name'][$options['query_name']]['object'];
                 } else {
-                    $query = $this->event->emit('sql_query_' . $options['query_name'], $query);
-                    $where = $this->event->emit('sql_where_' . $options['query_name'], $where);
-                    $limit = $this->event->emit('sql_limit_' . $options['query_name'], $limit);
+                    $query = $this->event->emit('controller_model_get_data_as_object_sql_query_' . $options['query_name'], $query);
+                    $where = $this->event->emit('controller_model_get_data_as_object_sql_where_' . $options['query_name'], $where);
+                    $limit = $this->event->emit('controller_model_get_data_as_object_sql_limit_' . $options['query_name'], $limit);
                     $array = $DB->exec($query . $where . $limit, $binding);
                     $this->queries['name'][$options['query_name']]['object'] = $array;
                 }
@@ -130,7 +130,7 @@ class controller_model extends \Prefab
                     if (empty($options['query_name'])) {
                         $options['query_name'] = $options['table'];
                     }
-                    $table = $this->event->emit('mapper_table_' . $options['query_name'], $options['table']);
+                    $table = $this->event->emit('controller_model_get_data_as_object_mapper_table_' . $options['query_name'], $options['table']);
                     if ($type = 'mapper') {
                         $retVal = new \DB\SQL\Mapper($DB, $table);
                     } else {
@@ -140,9 +140,9 @@ class controller_model extends \Prefab
                     }
                     if(!empty($options['where'])) {
                         $method = $options['method']?$options['method']:'find';
-                        $method = $this->event->emit('mapper_method_' . $options['query_name'], $method);
-                        $where = $this->event->emit('mapper_where_' . $options['query_name'], $options['where']);
-                        $bind = $this->event->emit('mapper_bind_' . $options['query_name'], $options['bind_array']);
+                        $method = $this->event->emit('controller_model_get_data_as_object_mapper_method_' . $options['query_name'], $method);
+                        $where = $this->event->emit('controller_model_get_data_as_object_mapper_where_' . $options['query_name'], $options['where']);
+                        $bind = $this->event->emit('controller_model_get_data_as_object_mapper_bind_' . $options['query_name'], $options['bind_array']);
                         $bind_val = false;
                         if(!empty($bind)) {
                             if (is_array($bind[0])) {

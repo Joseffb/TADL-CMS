@@ -58,7 +58,7 @@ class db_connect extends \Prefab
 
         //allows a plugin to add a database config programmaticly
         $extra_db_configs = false;
-        $extra_db_configs = $this->event->emit('db_extra_db_config',$extra_db_configs);
+        $extra_db_configs = $this->event->emit('db_connect_extra_configs',$extra_db_configs);
         if(!empty($extra_db_configs)) {
             foreach($extra_db_configs as $db_config) {
                 $this->connect_db($db_config);
@@ -69,13 +69,14 @@ class db_connect extends \Prefab
         static function boot($dbID = 0)
     {
         $c = new db_connect();
+        $c->event->emit('db_connect_boot',false);
         return $c->fw->get('DB' . $dbID);
     }
 
     public
     function check_db_config($db_config)
     {
-
+        $this->event->emit('check_db_config_start', false);
         $name = !empty($db_config['DB_NAME']) ? true : false;
         $user = !empty($db_config['DB_USER']) ? true : false;
         $pass = !empty($db_config['DB_PASSWORD']) ? true : false;
@@ -88,13 +89,15 @@ class db_connect extends \Prefab
         } elseif ($name && $user && $pass && $type) {
             $retVal = 88;
         }
-        $retVal = $this->event->emit('db_parse_environment_config',$retVal);
+        $retVal = $this->event->emit('db_connect_check_db_config_parse',$retVal);
+        $retVal = $this->event->emit('db_connect_check_db_end',$retVal);
         return $retVal;
     }
 
     public
     function connect_db($db_config)
     {
+        $this->event->emit('db_connect_start', false);
         $session_table = $this->fw->exists('SESSION_TABLE_NAME') ? $this->fw->SESSION_TABLE_NAME : "SESSION_DATA";
         if (!$this->fw->DEVOID('CACHE')) {
             //todo determine if this is a local cache
@@ -210,7 +213,7 @@ class db_connect extends \Prefab
                 $db = $test ? new \DB\MONGO('mongodb://' . $host . ':' . $port, $name) : false;
                 break;
             case 'jig':
-                $host = $host != 'localhost' ? $host : $fw->TEMP . "jig_data";
+                $test = $host != 'localhost' ? $host : $fw->TEMP . "jig_data";
                 $format = null;
                 if (!empty($db_config['DB_JIG_FORMAT']) && $db_config['DB_JIG_FORMAT'] == "Serialized") {
                     $format = \DB\Jig::FORMAT_Serialized;
@@ -228,9 +231,9 @@ class db_connect extends \Prefab
         }
 
         if (!$this->fw->DEVOID('CACHE')) {
-            $session_db = $this->event->emit('db_session_db', $db);
-            $session_table = $this->event->emit('db_session_table_name', $session_table);
-            $session_callable = $this->event->emit('db_session_table_name', true);
+            $session_db = $this->event->emit('db_connect_session_db', $db);
+            $session_table = $this->event->emit('db_connect_session_table_name', $session_table);
+            $session_callable = $this->event->emit('db_connect_session_table_name', true);
             if($type == 'mongo') {
                 new \DB\MONGO\Session($session_db, $session_table, $session_callable);
             } elseif($type == 'jig') {
@@ -242,11 +245,9 @@ class db_connect extends \Prefab
 
         //we keep track of all the database connection names (not object) in the registry.
         $databases = $this->fw->get('DATABASES');
-        //$dbcount = count($databases);
-        //$db_count = $dbcount != 0?$dbcount - 1:0;  todo -- do we need to reduce db count by one?
         $db_count = count($databases);
         $databases['DB_INFO'][] = array('DB' . $db_count => $type);
-        $databases = $this->fw->set('DATABASES', $databases);
+        $this->fw->set('DATABASES', $databases);
         //keep track of each individual db connection (object) in a variable DB0, DB1, DB2, etc
         $this->fw->set('DB' . $db_count, $db);
         //DB0 will get the honor of being the default DB. If the DEFAULT config switch is set to true this will overwrite DB0 as the default.
@@ -254,6 +255,7 @@ class db_connect extends \Prefab
             $this->fw->set('DB', $db);
             $this->fw->set('DB_TYPE', $type);
         }
+        $db = $session_db = $this->event->emit('db_connect_end', $db);
         return $db;
     }
 

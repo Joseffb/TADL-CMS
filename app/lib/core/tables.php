@@ -16,12 +16,13 @@ class tables extends \DB\Cortex
 {
     public $fw = FALSE;
     protected $fluid = false;
+    protected $event = false;
 
     public function __construct()
     {
         $this->fw = \Base::instance();
         parent::__construct();
-
+        $this->event = new \Event();
         $this->beforesave(function ($mapper) {
            $this->event->emit('tables_beforesave_start', false);
             if ($this->fw->ENABLE_CHANGE_LOG) {
