@@ -6,6 +6,8 @@ alpha build.
 
 v.0.0.0.2-alpha
 
+before using it first run `composer install` or `composer update` to install required files.
+
 So far:
 
 - You can install the tables by visiting /json/setup/tables_install
