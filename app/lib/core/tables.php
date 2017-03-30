@@ -23,6 +23,7 @@ class tables extends \DB\Cortex
         parent::__construct();
 
         $this->beforesave(function ($mapper) {
+           $this->event->emit('tables_beforesave_start', false);
             if ($this->fw->ENABLE_CHANGE_LOG) {
                 if($mapper->table() != 'audit_log') {
                     //Can't audit the audit log, will cause infinite loop.
@@ -33,6 +34,7 @@ class tables extends \DB\Cortex
                     }
                 }
             }
+            $this->event->emit('tables_beforesave_end', false);
         });
     }
 
@@ -43,28 +45,46 @@ class tables extends \DB\Cortex
 
     public function basic_audit_update($mapper)
     {
+        $this->event->emit('tables_basic_audit_update_start', false);
         $c = new controller_model();
         if (!$c->check_if_table_exists('audit_log')) {
             audit_log::setup();
         }
-        $audit = new \DB\SQL\Mapper($this->fw->db, 'audit_log');
-        $results = $audit->load();
+        $c = new controller_model();
+        $query = array(
+            'query_name' => 'basic_audit_update',
+            'table' => 'audit_log',
+            'method' => 'load'
+        );
+        //$audit = new \DB\SQL\Mapper($this->fw->db, 'audit_log');
+        $results = $c->get_data_as_object($query);
         $results->name = $mapper->table();
         $results->record_id = $mapper->id;
         $results->touch('modified');
         $results->modified_by = $this->fw->USER_ID ?: 0;
+        $results = $this->event->emit('tables_basic_audit_update_save', $results);
         $results->save();
         $results->reset();
+        $this->event->emit('tables_basic_audit_update_end', false);
     }
 
     public function detail_audit_update($mapper)
     {
+
+        $this->event->emit('tables_detail_audit_update_start', false);
         $c = new controller_model();
         if (!$c->check_if_table_exists('audit_log')) {
             audit_log::setup();
         }
-        $audit = new \DB\SQL\Mapper($this->fw->db, 'audit_log');
-        $results = $audit->load();
+        $c = new controller_model();
+        $query = array(
+            'query_name' => 'detail_audit_update',
+            'table' => 'audit_log',
+            'method' => 'load'
+        );
+
+        //$audit = new \DB\SQL\Mapper($this->fw->db, 'audit_log');
+        $results = $c->get_data_as_object($query);
         $results->name = $mapper->table();
         $results->record_id = $mapper->id;
         $results->touch('modified');
@@ -80,8 +100,11 @@ class tables extends \DB\Cortex
                 $results->new_values = $mapper->$fld->current;
             }
         }
+
+        $results = $this->event->emit('tables_detail_audit_update_save', $results);
         $results->save();
         $results->reset();
+        $this->event->emit('tables_detail_audit_update_end', false);
     }
 
     public function get_fieldConf()

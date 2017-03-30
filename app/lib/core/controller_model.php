@@ -148,21 +148,20 @@ class controller_model extends \Prefab
                             if (is_array($bind[0])) {
                                 foreach($bind as $k => $v) {
                                     //named parameters
-                                    $bind_val[] = "'$k'=>'$v'";
+                                    $bind_val[$k] = $v;
                                 }
                             } else {
                                 //? parameters
                                 foreach($bind as $v) {
                                     //named parameters
-                                    $bind_val[] = "'$v'";
+                                    $bind_val[] = $v;
                                 }
                             }
-                            $bind_val = implode(",",$bind_val);
+                            $where = array_merge($where,$bind_val);
                         }
-                        $retVal = $retVal->$method($where, $bind_val);
+                        $retVal = $retVal->$method($where);
                     }
                 }
-
                 break;
         }
         return $retVal;
