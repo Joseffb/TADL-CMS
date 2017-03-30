@@ -14,7 +14,6 @@ use utils\json;
 class tadl extends \core\controller_model
 {
     public $fw = FALSE;
-
     public function __construct()
     {
         parent::__construct();
@@ -39,7 +38,8 @@ class tadl extends \core\controller_model
 
     public static function json_register()
     {
-        //event_tadl_register_before_submit
+        $c = new tadl;
+        $c->event->emit('tadl_json_register_start', false);
         //todo maybe \core\controller_model should magically register these for its children?
 
         self::register('controllers', 'tadl', 'show', array('GET'), 'exposed', 'sends wadl to json output');
@@ -61,28 +61,27 @@ class tadl extends \core\controller_model
                 array('name' => 'scope', 'type' => 'string', 'values' => array('exposed', 'public', 'private', 'protected', 'static')),
             )
         );
-        //event_wadl_register_return
+        $c->event->emit('tadl_json_register_end', false);
     }
 
     public function show()
     {
-        //event_wadl_show_before_submit
+        $this->event->emit('tadl_show_start', false);
         $data = $this->get_tadl('exposed');
-        //event_wadl_show_data_submit
-
+        $data = $this->event->emit('tadl_show_end', $data);
         json::send_json(200, array('data' => $data, 'msg' => 'JSON API Documentation. With great wisdom comes great responsibility'));
     }
 
     public function get_tadl($scope = 'all')
     {
-
+        $this->event->emit('tadl_'.__FUNCTION__.'_start', false);
         //todo pull from db
         $wadl = $this->fw->exists('TADL') ? $this->fw->get('TADL') : false;
-        //event_get_wadl_pull
+        $wadl = $this->event->emit('tadl_'.__FUNCTION__.'_pull', $wadl);
         if ($wadl && $scope != 'all') {
             $wadl = $wadl[$scope];
         }
-        //event_get_wadl_return
+        $wadl = $this->event->emit('tadl_'.__FUNCTION__.'_end', $wadl);
         return $wadl;
     }
 
@@ -92,15 +91,15 @@ class tadl extends \core\controller_model
     public static function register($namespace, $controller, $method, $protocols = array('GET'), $scope = "public", $comment = '', $args_expected = array())
     {
         $t = new tadl();
+        $t->event->emit('tadl_'.__FUNCTION__.'_start', false);
         $wadl = $t->get_tadl();
-        // event_wadl_register_pull
-        // todo write to db
+        $wadl = $t->event->emit('tadl_'.__FUNCTION__.'_pull', $wadl);
         $wadl[$scope][$namespace][$controller]['methods'][$method]['namespace'] = $namespace;
         $wadl[$scope][$namespace][$controller]['methods'][$method]['controller'] = $controller;
         $wadl[$scope][$namespace][$controller]['methods'][$method]['comment'] = $comment;
         $wadl[$scope][$namespace][$controller]['methods'][$method]['args'] = $args_expected;
         $wadl[$scope][$namespace][$controller]['methods'][$method]['protocols'] = $protocols;
+        $wadl = $t->event->emit('tadl_'.__FUNCTION__.'_end', $wadl);
         $t->fw->set('TADL', $wadl);
-        // event_wadl_register_return
     }
 }

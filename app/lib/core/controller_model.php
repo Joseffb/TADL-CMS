@@ -16,7 +16,7 @@ class controller_model extends \Prefab
 
     public $fw, $db;
     protected $queries = array();
-    protected $event = false;
+    public $event = false;
 
     public function __construct()
     {
@@ -70,6 +70,8 @@ class controller_model extends \Prefab
          *  'pagination' => array('start' => int, length   => int)
          * )
          */
+        $this->event->emit('controller_model_get_data_as_object_start', false);
+        $this->event->emit('controller_model_get_data_as_object_start_' . $options['query_name'], false);
         $retVal = false;
         if (!empty($options['table']) && !$this->check_if_table_exists($options['table'])) {
             //security check -- make sure the table is in the DB we are have configured and not in the system db or elsewhere.
@@ -164,6 +166,9 @@ class controller_model extends \Prefab
                 }
                 break;
         }
+
+        $retVal = $this->event->emit('controller_model_get_data_as_object_end_' . $options['query_name'], $retVal);
+        $retVal = $this->event->emit('controller_model_get_data_as_object_end', $retVal);
         return $retVal;
     }
 
