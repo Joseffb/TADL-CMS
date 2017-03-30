@@ -24,10 +24,13 @@ class tables extends \DB\Cortex
 
         $this->beforesave(function ($mapper) {
             if ($this->fw->ENABLE_CHANGE_LOG) {
-                if ($this->fw->ENABLE_DETAILED_CHANGE_LOG) {
-                    $this->detail_audit_update($mapper);
-                } else {
-                    $this->basic_audit_update($mapper);
+                if($mapper->table() != 'audit_log') {
+                    //Can't audit the audit log, will cause infinite loop.
+                    if ($this->fw->ENABLE_DETAILED_CHANGE_LOG) {
+                        $this->detail_audit_update($mapper);
+                    } else {
+                        $this->basic_audit_update($mapper);
+                    }
                 }
             }
         });
