@@ -16,12 +16,14 @@ class controller_model extends \Prefab
 
     public $fw, $db;
     protected $queries = array();
+    protected $event = false;
 
     public function __construct()
     {
         $DB = false;
         $this->fw = \Base::instance();
         $this->connect_db();
+        $this->event = new \Event();
     }
 
     public function connect_db()
@@ -32,23 +34,25 @@ class controller_model extends \Prefab
         $this->db = $this->fw->GET('DB');
     }
 
-    public function test () {
+    public function test()
+    {
         echo "test";
     }
 
 
-    public function get_model_path($class_name, $namespace = false, $db_type = false) {
-        if($namespace) {
-            $namespace = $namespace."\\";
-            $class_name = str_replace($namespace, '',$class_name);
+    public function get_model_path($class_name, $namespace = false, $db_type = false)
+    {
+        if ($namespace) {
+            $namespace = $namespace . "\\";
+            $class_name = str_replace($namespace, '', $class_name);
         }
-        $db_type=$db_type?:$this->fw->DB_TYPE;
-        $is_sql = $db_type != "jig"  &&  $db_type != "mongo";
-        $path = "\\models\\".$db_type."\\".$class_name;
-        if($is_sql && $db_type != 'mysql') {
-            if(!class_exists($path)) {
+        $db_type = $db_type ?: $this->fw->DB_TYPE;
+        $is_sql = $db_type != "jig" && $db_type != "mongo";
+        $path = "\\models\\" . $db_type . "\\" . $class_name;
+        if ($is_sql && $db_type != 'mysql') {
+            if (!class_exists($path)) {
                 //allow other sql to default to the mysql variant if there are missing routes for that sql variant.
-                $path = "\\models\\mysql\\".$class_name;
+                $path = "\\models\\mysql\\" . $class_name;
             }
         }
         return $path;
@@ -76,16 +80,16 @@ class controller_model extends \Prefab
         switch ($options['type']) {
             // Use this for reading and pulling data from the db.
             case 'sql':
-                if(empty($options['query_name'])) {
-                    $options['query_name'] = $options['query'];
+                if (empty($options['query_name'])) {
+                    $options['query_name'] = str_replace(" ", "-", $options['query']);
                 }
                 //Query logic
                 $query = !empty($options['query']) ? $options['query'] : false;
+                $where = !empty($options['where']) ? $options['where'] : false;
                 if (!$query && !$this->fw->devoid($options['table'])) {
                     return false;
                 } elseif (!$query) {
                     $query = "SELECT * FROM " . $options['table'];
-                    //todo try to create a where statement id binding is filled in.
                 }
                 $binding = !empty($options['bind_array']) ? $options['bind_array'] : null;
 
@@ -100,10 +104,13 @@ class controller_model extends \Prefab
                     }
                 }
 
-                if((!empty($this->queries['name']) && in_array($options['query_name'], $this->queries['name'])) && empty($options['requery'])) {
+                if ((!empty($this->queries['name']) && in_array($options['query_name'], $this->queries['name'])) && empty($options['requery'])) {
                     $array = $this->queries['name'][$options['query_name']]['object'];
                 } else {
-                    $array = $DB->exec($query . $limit, $binding);
+                    $query = $this->event->emit('sql_query_' . $options['query_name'], $query);
+                    $where = $this->event->emit('sql_where_' . $options['query_name'], $where);
+                    $limit = $this->event->emit('sql_limit_' . $options['query_name'], $limit);
+                    $array = $DB->exec($query . $where . $limit, $binding);
                     $this->queries['name'][$options['query_name']]['object'] = $array;
                 }
 
@@ -120,12 +127,39 @@ class controller_model extends \Prefab
                     error_log('Table name not provided in get_data_as_object operation. Error 409');
                     $retVal = false;
                 } else {
+                    if (empty($options['query_name'])) {
+                        $options['query_name'] = $options['table'];
+                    }
+                    $table = $this->event->emit('mapper_table_' . $options['query_name'], $options['table']);
                     if ($type = 'mapper') {
-                        $retVal = new \DB\SQL\Mapper($DB, $options['table']);
+                        $retVal = new \DB\SQL\Mapper($DB, $table);
                     } else {
                         //default
-                        $table = "\\tables\\" . $options["table"];
+                        $table = "\\tables\\" . $table;
                         $retVal = new $table();
+                    }
+                    if(!empty($options['where'])) {
+                        $method = $options['method']?$options['method']:'find';
+                        $method = $this->event->emit('mapper_method_' . $options['query_name'], $method);
+                        $where = $this->event->emit('mapper_where_' . $options['query_name'], $options['where']);
+                        $bind = $this->event->emit('mapper_bind_' . $options['query_name'], $options['bind_array']);
+                        $bind_val = false;
+                        if(!empty($bind)) {
+                            if (is_array($bind[0])) {
+                                foreach($bind as $k => $v) {
+                                    //named parameters
+                                    $bind_val[] = "'$k'=>'$v'";
+                                }
+                            } else {
+                                //? parameters
+                                foreach($bind as $v) {
+                                    //named parameters
+                                    $bind_val[] = "'$v'";
+                                }
+                            }
+                            $bind_val = implode(",",$bind_val);
+                        }
+                        $retVal = $retVal->$method($where, $bind_val);
                     }
                 }
 
@@ -290,23 +324,24 @@ class controller_model extends \Prefab
         return $retVal;
     }
 
-    public function update_each_field_type ($tbl_name, $check_only = false, $DB = false) {
+    public function update_each_field_type($tbl_name, $check_only = false, $DB = false)
+    {
         $DB = $DB ?: $this->db;
         if (!$DB) {
             return false;
         }
-        $retVal=false;
+        $retVal = false;
         $schema = new \DB\SQL\Schema($DB);
-        $child = get_class("\\tables\\".$tbl_name);
+        $child = get_class("\\tables\\" . $tbl_name);
         $table_name = $child->$table;
         $cortex_field_definitions = $child->$fieldConf;
         $tableInfo = $schema->alterTable($table_name)->getCols(true);
-        foreach($cortex_field_definitions as $columnName => $fieldConf){
+        foreach ($cortex_field_definitions as $columnName => $fieldConf) {
             $condition = $tableInfo[$columnName] == $fieldConf['type'];
-            $condition = $condition + $schema->isCompatible( $fieldConf['type'], $columnName );
-            if($check_only) {
+            $condition = $condition + $schema->isCompatible($fieldConf['type'], $columnName);
+            if ($check_only) {
                 $retVal = $condition;
-            } else if($condition) {
+            } else if ($condition) {
                 $tableInfo->updateColumn($columnName, $fieldConf['type'], true);
                 $tableInfo->build();
                 $retVal = true;
@@ -317,11 +352,10 @@ class controller_model extends \Prefab
 
     public function escape($value)
     {
-        if ($value)
-        {
-            return "`".str_replace("`","``",$value)."`";
+        if ($value) {
+            return "`" . str_replace("`", "``", $value) . "`";
         } else {
-            error_log("Cannot escape ".$value.". Operation aborted for the greater good of all mankind. 500");
+            error_log("Cannot escape " . $value . ". Operation aborted for the greater good of all mankind. 500");
             die();
         }
     }
