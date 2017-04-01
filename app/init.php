@@ -30,8 +30,8 @@ $fw->config($fw->CORE."system.ini");
 //###########################################################
 
 //user configs
-$fw->config($fw->CONFIGS."load.cfg");
-
+\controllers\config::load();
+\extensions\test::one();
 //initiate system
 \controllers\tadl::load_tadl();
 

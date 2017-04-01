@@ -1,3 +1,77 @@
+; Do not add this file to a repository.
+;It should be moved over to your individual environment (dev, stage, prod etc) and edited apprpriately.
+[globals]
+DEBUG = 3
+DB_COUNT=3
+TEMP=../temp/
+CACHE = TRUE
+ENABLE_AUDIT_LOG = TRUE
+TZ = America/New_York
+
+[user_load]
+TESTSYSTEMVAR=WOW THIS WORKS (SHOULD REPLACE);
+AUTOLOAD = /this/should/append
+
+[database]
+DB_TYPE=MYSQL
+DB_HOST=localhost
+DB_NAME=tiger123
+DB_USER=tiger123
+DB_PASSWORD=foobar
+DB_PORT=3302
+
+;[database.0]
+;DB_TYPE=MYSQL
+;DB_HOST=localhost
+;DB_NAME=cms0
+;DB_USER=johnDoe
+;DB_PASSWORD=password
+;DB_PORT=3302
+
+;[database.1]
+;DB_TYPE=MYSQL
+;DB_HOST=localhost
+;DB_NAME=cms1
+;DB_USER=johnDoe
+;DB_PASSWORD=password
+;DB_PORT=3302
+
+;[database.2]
+;DB_TYPE=MYSQL
+;DB_HOST=localhost
+;DB_NAME=cms2
+;DB_USER=johnDoe
+;DB_PASSWORD=password
+;DB_PORT=3302
+
+[mailer]
+smtp.host = smtp.domain.com
+smtp.port = 25
+smtp.user = username
+smtp.pw = password
+; transfer scheme: SSL, TLS
+smtp.scheme =
+
+; global mail settings
+from_mail = info@domain.de
+from_name = Web Application
+errors_to = error@domain.com
+return_to = bounce@domain.com
+
+; handler for SMTP errors
+on.failure = \MailTest::logError
+; handler for tracing opened mails
+on.ping = \MailTest::traceMail
+; handler for redirecting jump links
+on.jump = \MailTest::traceClick
+; activate link parsing
+jumplinks = true
+; path for storing mail dumps
+storage_path = logs/
+
+[routes]
+;
+
 [ASSETS]
 ;# if this is false, you need to manually put the group markers like
 ;# <!-- assets-head --> and <!-- assets-footer --> into your template
