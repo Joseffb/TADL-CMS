@@ -13,6 +13,7 @@ $fw->set( 'PUBLIC_ROOT', $fw->ROOT );
 $fw->set( 'ROOT', dirname($fw->ROOT)."/"); //we are fixing the ROOT to be the true root.
 $fw->set( 'APP', $fw->get( 'ROOT' )."app/" );
 $fw->set( 'CONFIGS', $fw->get( 'APP' ) . "configs/" );
+$fw->set( 'PLUGINS', $fw->get( 'APP' ) . "extensions/" );
 $fw->set( 'LIB', $fw->get( 'APP' ) . "lib/" );
 $fw->set( 'CONTROLLERS', $fw->get( 'LIB' ) . "controllers/" );
 $fw->set( 'CORE', $fw->get( 'LIB' ) . "core/" );
