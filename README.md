@@ -16,7 +16,7 @@ v.0.0.0.3-alpha
 6. Visit tadl.site/json/setup/tables_install
 7. Visit tadl.site/, tadl.site/json, or tadl.site/cp
 
-# So far you can...:
+# So far you can...
 - You can install tables
 -- visiting /json/setup/tables_install
 
