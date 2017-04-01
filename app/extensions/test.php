@@ -23,6 +23,8 @@ class test
         //echo '<pre>';
         //echo debug_print_backtrace();
        // echo '</pre>';
+
+        //This is a test class to test out the config system. File soon to be deleted.
         echo "<h2>SCREEN PRINT: Extension test: $fw->TESTSYSTEMVAR</h2>";
     }
 }
