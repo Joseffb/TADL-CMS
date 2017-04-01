@@ -32,7 +32,11 @@ $fw->config($fw->CORE."system.ini");
 
 //user configs
 \controllers\config::load();
+
+//this is a test function -- comment out or delete for a prod system
 \extensions\test::one();
+//###########################################################
+
 //initiate system
 \controllers\tadl::load_tadl();
 
