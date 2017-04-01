@@ -69,7 +69,7 @@ class tadl extends \core\controller_model
         $this->event->emit('tadl_show_start', false);
         $data = $this->get_tadl('exposed');
         $data = $this->event->emit('tadl_show_end', $data);
-        json::send_json(200, array('data' => $data, 'msg' => 'JSON API Documentation. With great wisdom comes great responsibility'));
+        json::send_json(array('data' => $data, 'msg' => 'JSON API Documentation. With great wisdom comes great responsibility'));
     }
 
     public function get_tadl($scope = 'all')

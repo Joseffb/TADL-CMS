@@ -10,14 +10,16 @@ namespace utils;
 
 
 class json {
-    static function send_json($code, $options = null) {
+    static function send_json($options = null) {
         //self::pe($options);
         if(!empty($options) && !is_array($options)) {
+            $code = 200;
             $data = $options;
             $msg = null;
             $status = null;
 
         } else {
+            $code = !empty($options['code']) ?$options['code']: 200;
             $data = !empty($options['data']) ?$options['data']: null;
             $msg = !empty($options['msg']) ?$options['msg']: null;
             $status = !empty($options['status']) ?$options['status']: null;

@@ -46,26 +46,26 @@ class json extends \core\controller_model
         unset($props[0]);
         unset($props[1]);
         $namespace = "controllers"; //default namespace
-        if(empty($props)) {
+        if (empty($props)) {
             // If it's just a /json call then we want to show all the callable functions.
             // Other wise it will show only the GET functions.
             $protocol = "ALL";
             $controller = 'tadl';
             $method = 'show';
         } else {
-            $controller = array_shift($props)?:'tadl';
-            $method = array_shift($props)?:'show';
+            $controller = array_shift($props) ?: 'tadl';
+            $method = array_shift($props) ?: 'show';
         }
         //debug::pe($w[$namespace][$controller]['methods'][$method]);
         //get namespace
         if (!empty($w[$namespace][$controller]['methods'][$method])) {
-                $mhd = $w[$namespace][$controller]['methods'][$method];
-                if ($protocol != "ALL" && !in_array($protocol, $mhd['protocols'])) {
-                    $retVal = false;
-                } else {
-                    $retVal = $mhd;
-                    $retVal['method'] = $method;
-                }
+            $mhd = $w[$namespace][$controller]['methods'][$method];
+            if ($protocol != "ALL" && !in_array($protocol, $mhd['protocols'])) {
+                $retVal = false;
+            } else {
+                $retVal = $mhd;
+                $retVal['method'] = $method;
+            }
         } else {
             foreach ($w as $namespace => $con) {
                 foreach ($con as $c => $attrib) {
@@ -92,8 +92,20 @@ class json extends \core\controller_model
             $class = "\\" . $retVal['namespace'] . "\\" . $retVal['controller'];
             $c = new $class();
             $method = $retVal['method'];
+            $result = $c->$method($args);
+            if (is_array($result)) {
+                $array = array(
+                    'data' => $result['data'] ?$result['data']: false,
+                    'code' => $result['code'] ?$result['code']: 200,
+                    'msg' => $result['msg'] ?$result['msg']: false,
+                    'status' => $result['status'] ?$result['status']: false,
+                );
+                $data = array('data' => $array);
+            } else {
+                $data = array('data' => $result);
+            }
 
-            return \utils\json::send_json(200,array('data'=>$c->$method($args)));
+            return \utils\json::send_json($data);
         }
         return $retVal;
 
