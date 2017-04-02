@@ -61,7 +61,11 @@ class json extends \core\controller_model
         if (!empty($w[$namespace][$controller]['methods'][$method])) {
             $mhd = $w[$namespace][$controller]['methods'][$method];
             if ($protocol != "ALL" && !in_array($protocol, $mhd['protocols'])) {
-                $retVal = false;
+                $array = array(
+                    'code' => 400,
+                    'msg' => $protocol. ' protocol is not allowed for that method.',
+                );
+                return \utils\json::send_json($array);
             } else {
                 $retVal = $mhd;
                 $retVal['method'] = $method;

@@ -12,7 +12,7 @@ class users extends \core\tables
         ##### Setup Table Fields #####
         $this->fieldConf['user_name'] = array(
             'type' => 'VARCHAR256',
-            'nullable' => FALSE,
+            'nullable' => TRUE,
         );
         $this->fieldConf['email'] = array(
             'type' => 'VARCHAR256',
@@ -62,6 +62,7 @@ class users extends \core\tables
             return false;
         }
 
+        //CORTEX todo fill in username with email if username is blank
         return $value;
     }
 

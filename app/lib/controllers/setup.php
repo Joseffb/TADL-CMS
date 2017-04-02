@@ -13,15 +13,15 @@ class setup extends \core\controller_model
 {
     public static function json_register()
     {
-        tadl::register('controllers', 'setup', 'tables_install', array('GET'), 'exposed','sets up all tables using cortex',
+        tadl::register('controllers', 'setup', 'tables_install', array('GET'), 'exposed','Sets up all tables using cortex',
             array(
-                array('name' => 'f3', 'type' => 'object'),
+                array('name' => 'f3', 'type' => 'object', 'default' => false),
             )
         );
 
-        tadl::register('controllers', 'setup', 'table_install', array('POST'), 'exposed','sets up a single table using cortex',
+        tadl::register('controllers', 'setup', 'table_install', array('POST'), 'exposed','Sets up a single table using cortex',
             array(
-                array('name' => 'f3', 'type' => 'object'),
+                array('name' => 'table', 'type' => 'varchar(255)', 'required'=>true ),
             )
         );
         //event_wadl_register_return
@@ -42,6 +42,7 @@ class setup extends \core\controller_model
                 $class = NULL;
             }
         }
+
         return $retVal;
     }
 

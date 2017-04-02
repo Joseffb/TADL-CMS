@@ -42,25 +42,7 @@ class tadl extends \core\controller_model
         $c->event->emit('tadl_json_register_start', false);
         //todo maybe \core\controller_model should magically register these for its children?
 
-        self::register('controllers', 'tadl', 'show', array('GET'), 'exposed', 'sends wadl to json output');
-        self::register('controllers', 'tadl', 'get_wadl', array('GET'), 'public','gets wadl registrations',
-            array(
-                array('name' => 'scope',
-                    'type' => 'string',
-                    'values' => array('exposed', 'public', 'private', 'protected', 'static')
-                )
-            )
-        );
-        self::register('controllers', 'tadl', 'wadl_register', array('GET'), 'public','adds new wadl registrations',
-            array(
-                array('name' => 'namespace', 'type' => 'string'),
-                array('name' => 'controller', 'type' => 'string'),
-                array('name' => 'method', 'type' => 'string'),
-                array('name' => 'comment', 'type' => 'string'),
-                array('name' => 'args_expected', 'type' => 'array'),
-                array('name' => 'scope', 'type' => 'string', 'values' => array('exposed', 'public', 'private', 'protected', 'static')),
-            )
-        );
+        self::register('controllers', 'tadl', 'show', array('GET'), 'exposed', 'Send function information to JSON');
         $c->event->emit('tadl_json_register_end', false);
     }
 

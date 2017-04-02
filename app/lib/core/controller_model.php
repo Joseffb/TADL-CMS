@@ -140,6 +140,7 @@ class controller_model extends \Prefab
                         $table = "\\tables\\" . $table;
                         $retVal = new $table();
                     }
+                    //complex load and find
                     if(!empty($options['where'])) {
                         $method = $options['method']?$options['method']:'find';
                         $method = $this->event->emit('controller_model_get_data_as_object_mapper_method_' . $options['query_name'], $method);
@@ -162,6 +163,8 @@ class controller_model extends \Prefab
                             $where = array_merge($where,$bind_val);
                         }
                         $retVal = $retVal->$method($where);
+                    } elseif(!empty($options['load'])) {
+                        $retVal = $retVal->load();
                     }
                 }
                 break;
@@ -353,6 +356,79 @@ class controller_model extends \Prefab
         }
         return $retVal;
     }
+
+    function add_table_fields(array $fields, $table_override = false)
+    {
+        $c = new controller_model();
+        $s = new \DB\SQL\Schema($this->db);
+        /*        $fields = = array(
+                        'table' => 'table_name', //required
+                        'name' => 'fieldname', //required
+                        'type' => 'DATETIME', //required
+                        'nullable' => TRUE,
+                        'defaults' => '',
+                        'after' => 'id' //sorts column after another field
+                        'index' => true //makes this a unique index
+                        'drop_col' => false //drops this field
+                        'drop_index' => false // drops this field as an index
+                        'rename' => 'new name' //renames an existing field
+                );
+        */
+        foreach ($fields as $field) {
+            $table = $s->alterTable($field['table']);
+            if (!empty($field['drop_col'])) {
+                $table->dropColumn($field['drop_col']);
+            } else if (!empty($field['drop_index'])) {
+                $table->dropIndex($field['drop_col']);
+            } else if (!empty($field['rename'])) {
+                $table->renameColumn($field['name'], $field['rename']);
+            } else {
+                $array = array();
+                if (!empty($field['table'])) {
+                    $array['table'] = $field['table'];
+                }
+                if (!empty($table_override)) {
+                    $array['table'] = $table_override;
+                }
+                if (!empty($field['name'])) {
+                    $array['name'] = $field['name'];
+                }
+                if (!empty($field['type'])) {
+                    $array['type'] = $field['type'];
+                }
+
+                if (empty($array)) {
+                    //todo create a write_log function
+                    error_log(__CLASS__ . '::' . __FUNCTION__ . '(Line: ' . __LINE__ . ') - missing required field attributes name and/or type');
+                    continue; //missing required fields, can't add this field so we goto next field.
+                }
+
+                if (!empty($field['nullable'])) {
+                    $array['nullable'] = $field['nullable'];
+                }
+                if (!empty($field['defaults'])) {
+                    $array['defaults'] = $field['defaults'];
+                }
+                if (!empty($field['after'])) {
+                    $array['after'] = $field['after'];
+                }
+                if (!empty($field['index'])) {
+                    $array['index'] = $field['index'];
+                }
+
+            }
+
+            $table->build();
+        }
+        return true;
+    }
+
+    function get_table_column_fields($table) {
+        $s = new \DB\SQL\Schema($this->db);
+        $tbl = $s->alterTable($table);
+        return $tbl->getCols(true);
+    }
+
 
     public function escape($value)
     {

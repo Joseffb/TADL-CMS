@@ -10,6 +10,7 @@
 
 namespace core;
 
+use App\Schema;
 use tables\audit_log;
 
 class tables extends \DB\Cortex
@@ -24,9 +25,9 @@ class tables extends \DB\Cortex
         parent::__construct();
         $this->event = new \Event();
         $this->beforesave(function ($mapper) {
-           $this->event->emit('tables_beforesave_start', false);
+            $this->event->emit('tables_beforesave_start', false);
             if ($this->fw->ENABLE_CHANGE_LOG) {
-                if($mapper->table() != 'audit_log') {
+                if ($mapper->table() != 'audit_log') {
                     //Can't audit the audit log, will cause infinite loop.
                     if ($this->fw->ENABLE_DETAILED_CHANGE_LOG) {
                         $this->detail_audit_update($mapper);
@@ -107,6 +108,7 @@ class tables extends \DB\Cortex
         $results->reset();
         $this->event->emit('tables_detail_audit_update_end', false);
     }
+
 
     public function get_fieldConf()
     {

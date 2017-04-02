@@ -25,6 +25,7 @@ class site_users extends \core\tables
         $this->fieldConf['is_enabled'] = array(
             'type' => 'INT1',
             'nullable' => FALSE,
+            'default' => 1
         );
         $this->table = str_replace(__NAMESPACE__."\\", '',$this->table);
         $this->fieldConf = array_merge($this->fieldConf, $this->get_fieldConf());
