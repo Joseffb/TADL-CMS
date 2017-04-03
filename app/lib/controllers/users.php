@@ -30,7 +30,7 @@ class users extends \core\controller_model
                 array('userDatum' => 'required', 'type' => $user_fields, 'required'=>true),
             )
         );
-        tadl::register('controllers', 'users', 'add_user_to_site', array('POST'), 'exposed', 'Adds an existing user to a site',
+        tadl::register('controllers', 'users', 'add_to_site', array('POST'), 'exposed', 'Adds an existing user to a site',
             array(
                 array('user_id' => 'required', 'type' => 'int(4)', 'required'=>true),
                 array('site_id' => 'required', 'type' => 'int(4)', 'required'=>true),
@@ -123,11 +123,11 @@ class users extends \core\controller_model
         $user->reset();
         $status['completed'] = 'Success: User '.$user_id.' created';
         $user = false; //PDO method to close the db connection and clear the old user mapper to save memory.
-        $status = array_merge($status, $this->add_user_to_site($user_id,$userDatum['site_id'],$userDatum['user_role_id'],$userDatum['is_enabled'] ));
+        $status = array_merge($status, $this->add_to_site($user_id,$userDatum['site_id'],$userDatum['user_role_id'],$userDatum['is_enabled'] ));
         return $status;
     }
 
-    function add_user_to_site($user_id=false, $site_id=false, $user_role_id = 0, $is_enabled = 1)
+    function add_to_site($user_id=false, $site_id=false, $user_role_id = 0, $is_enabled = 1)
     {
         $user_id = $user_id?:$_POST['user_id'];
         $site_id = $site_id?:$_POST['site_id'];
