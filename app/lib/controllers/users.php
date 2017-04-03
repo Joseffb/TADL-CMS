@@ -128,8 +128,9 @@ class users extends \core\controller_model
             $user->reset();
             $user = false; //PDO method to close the db connection and clear the old user mapper to save memory.
             $status = array_merge($status, $this->add_to_site($user_id,$userDatum['site_id'],$userDatum['user_role_id'],$userDatum['is_enabled'] ));
+            $status = array('code'=>201, 'data'=>$status);
         }
-               return $status;
+               return array('code'=>412, 'data'=>$status);
     }
 
     function add_to_site($user_id=false, $site_id=false, $user_role_id = 0, $is_enabled = 1)
