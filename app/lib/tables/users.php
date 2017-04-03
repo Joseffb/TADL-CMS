@@ -58,7 +58,7 @@ class users extends \core\tables
     {
         if (\Audit::instance()->email($value) == FALSE) {
             // no valid email address
-            die($value . " is not a proper email address and was not saved to the users table. ERROR 402");
+            die($value . " is not a proper email address and was not saved to the users table.");
         }
 
         //CORTEX todo fill in username with email if username is blank
