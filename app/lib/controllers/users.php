@@ -99,31 +99,37 @@ class users extends \core\controller_model
         $user_array = array(
             'table' => 'users',
         );
-
+        $bad_email = false;
         $status = array('errors' => false);
         $user = $this->get_data_as_object($user_array); //this is a loaded cortex mapper
         $user_fields = $this->get_user_fields();
         foreach($userDatum as $k => $v) {
             if($k != 'site_id' && $k != 'user_role_id') {
                 if(!empty($user_fields[$k])) {
-                    $user->$k = $v;
+                    if($k == 'email' && \Audit::instance()->email($v) == FALSE) {
+                        $status['errors'][] = $k. ' is an invalid email address. record not saved';
+                        $bad_email = true;
+                    } else {
+                        $user->$k = $v;
+                    }
+
                 } else {
                     //todo create a write_log function
-                    $status['errors'] = $k. ' non-existent';
+                    $status['errors'][] = $k. ' non-existent';
                     error_log(__CLASS__ . '::' . __FUNCTION__ . '(Line: ' . __LINE__ . ') - field '.$k.' does not exist on the table. Please create the field before trying to write to it.');
                     continue;
                 }
             }
         }
-        $user->save();
-        $status['user']  = clone($user); //we just want that one variable.
-        $user_id = $status['user']->id;
+        if (!$bad_email) {
+            $user->save();   ; //we just want that one variable.
+            $user_id = $user->id;
 
-        $user->reset();
-        $status['completed'] = 'Success: User '.$user_id.' created';
-        $user = false; //PDO method to close the db connection and clear the old user mapper to save memory.
-        $status = array_merge($status, $this->add_to_site($user_id,$userDatum['site_id'],$userDatum['user_role_id'],$userDatum['is_enabled'] ));
-        return $status;
+            $user->reset();
+            $user = false; //PDO method to close the db connection and clear the old user mapper to save memory.
+            $status = array_merge($status, $this->add_to_site($user_id,$userDatum['site_id'],$userDatum['user_role_id'],$userDatum['is_enabled'] ));
+        }
+               return $status;
     }
 
     function add_to_site($user_id=false, $site_id=false, $user_role_id = 0, $is_enabled = 1)
@@ -149,9 +155,8 @@ class users extends \core\controller_model
         $site_user->is_enabled = $is_enabled;
 
         $site_user->save();
-        $status['site']  = clone($site_user);
         $site_user->reset();
-        $status['completed'] = 'Success: User '.$user_id.' assigned to site ' . $site_id;
+        $status['status'] = 'Success: User '.$user_id.' assigned to site ' . $site_id;
         return $status;
     }
     function get_users()
