@@ -25,7 +25,7 @@ class users extends \core\controller_model
         $user_fields['is_enabled']['default'] = 1;
         $user_fields['user_role_id'] = array('type'=>'int(4)', 'default' => 0 );
         $user_fields['site_id'] = array('type'=>'int(4)', 'required'=>true);
-        tadl::register('controllers', 'users', 'create', array('POST'), 'exposed', 'Creates a new user and adds user to a site',
+        tadl::register('controllers', 'users', 'create', array('POST'), 'exposed', 'Creates a new user and adds that user to a site',
             array(
                 array('userDatum' => 'required', 'type' => $user_fields, 'required'=>true),
             )
@@ -104,14 +104,13 @@ class users extends \core\controller_model
         $user = $this->get_data_as_object($user_array); //this is a loaded cortex mapper
         $user_fields = $this->get_user_fields();
         foreach($userDatum as $k => $v) {
-
             if($k != 'site_id' && $k != 'user_role_id') {
                 if(!empty($user_fields[$k])) {
                     $user->$k = $v;
                 } else {
                     //todo create a write_log function
                     $status['errors'] = $k. ' non-existent';
-                    error_log(__CLASS__ . '::' . __FUNCTION__ . '(Line: ' . __LINE__ . ') - field '.$k.' does not exist on the table. Please create the field before trying gto write to it.');
+                    error_log(__CLASS__ . '::' . __FUNCTION__ . '(Line: ' . __LINE__ . ') - field '.$k.' does not exist on the table. Please create the field before trying to write to it.');
                     continue;
                 }
             }
@@ -119,7 +118,7 @@ class users extends \core\controller_model
         $user->save();
         $status['user']  = clone($user); //we just want that one variable.
         $user_id = $status['user']->id;
-        error_log($this->fw->stringify($status['user']->id));
+
         $user->reset();
         $status['completed'] = 'Success: User '.$user_id.' created';
         $user = false; //PDO method to close the db connection and clear the old user mapper to save memory.
