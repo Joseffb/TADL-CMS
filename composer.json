@@ -11,6 +11,7 @@
   ],
   "require": {
     "bcosca/fatfree": "3.6.0",
+    "bcosca/fatfree-core": "3.6.0",
     "martynbiz/phpdebugbar": "dev-master",
     "ikkez/f3-events": "dev-master",
     "ikkez/f3-cortex": "v1.4.3",

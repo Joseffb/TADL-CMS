@@ -63,7 +63,7 @@ class json extends \core\controller_model
             if ($protocol != "ALL" && !in_array($protocol, $mhd['protocols'])) {
                 $array = array(
                     'code' => 400,
-                    'msg' => $protocol. ' protocol is not allowed for that method.',
+                    'msg' => $protocol . ' protocol is not allowed for that method.',
                 );
                 return \utils\json::send_json($array);
             } else {
@@ -97,14 +97,14 @@ class json extends \core\controller_model
             $c = new $class();
             $method = $retVal['method'];
             $result = $c->$method($args);
-            if (is_array($result)) {
+            if (array_key_exists('data', $result)) {
                 $array = array(
-                    'data' => $result['data'] ?$result['data']: false,
-                    'code' => $result['code'] ?$result['code']: 200,
-                    'msg' => $result['msg'] ?$result['msg']: false,
-                    'status' => $result['status'] ?$result['status']: false,
+                    'data' => !empty($result['data']) ? $result['data'] : false,
+                    'code' => !empty($result['code']) ? $result['code'] : 200,
+                    'msg' => !empty($result['msg']) ? $result['msg'] : false,
+                    'status' => !empty($result['status']) ? $result['status'] : false,
                 );
-                $data = array('data' => $array);
+                $data = $array;
             } else {
                 $data = array('data' => $result);
             }

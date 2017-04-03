@@ -25,6 +25,6 @@ class test
        // echo '</pre>';
 
         //This is a test class to test out the config system. File soon to be deleted.
-        echo "<h2>SCREEN PRINT: Extension test: $fw->TESTSYSTEMVAR</h2>";
+        echo "<h2>SCREEN PRINT: Extension test:<br/> $fw->TESTSYSTEMVAR</h2>";
     }
 }
