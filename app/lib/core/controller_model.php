@@ -125,15 +125,16 @@ class controller_model extends \Prefab
             case 'mapper':
             case 'cortex':
             default:
-                if ($this->fw->devoid($options['table'])) {
+                if (empty($options['table'])) {
                     error_log('Table name not provided in get_data_as_object operation. Error 409');
                     $retVal = false;
                 } else {
+
                     if (empty($options['query_name'])) {
                         $options['query_name'] = $options['table'];
                     }
                     $table = $this->event->emit('controller_model_get_data_as_object_mapper_table_' . $options['query_name'], $options['table']);
-                    if ($type = 'mapper') {
+                    if ($options['type'] == 'mapper') {
                         $retVal = new \DB\SQL\Mapper($DB, $table);
                     } else {
                         //default
@@ -163,7 +164,7 @@ class controller_model extends \Prefab
                             $where = array_merge($where,$bind_val);
                         }
                         $retVal = $retVal->$method($where);
-                    } elseif(!empty($options['load'])) {
+                    } elseif (isset($options['load'])) {
                         $retVal = $retVal->load();
                     }
                 }

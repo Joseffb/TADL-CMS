@@ -34,7 +34,7 @@ $fw->config($fw->CORE."system.ini");
 \controllers\config::load();
 
 //this is a test function -- comment out or delete for a prod system
-\extensions\test::one();
+//\extensions\test::one();
 //###########################################################
 
 //initiate system

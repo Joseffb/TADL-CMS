@@ -74,6 +74,7 @@ class users extends \core\controller_model
 
     function create () {
         $userDatum = $_POST;
+        //error_log($this->fw->stringify($_POST));
         return $this->create_user($userDatum);
     }
 
@@ -82,7 +83,7 @@ class users extends \core\controller_model
         //auth todo: check permissions of current admin has access to do this on $site
         /*
         $userDatum = array(
-            'username' => 'varchar(256)',
+            'user_name' => 'varchar(256)',
             'email' => 'varchar(256)',
             'password' => 'varchar(256)',
             'is_enabled' => 'int(1)',
@@ -90,32 +91,35 @@ class users extends \core\controller_model
             'user_role_id' => 'int(4)',
         );
         */
-
-        if(empty($userDatum['password']) || empty($userDatum['site_id']) ||empty($userDatum['email'])) {
+        $site_id = (int) $userDatum['site_id'];
+        if(empty($userDatum['password']) || !$site_id || empty($userDatum['email'])) {
             die('Create User Error: A Password, Site ID, and Email must be provided.');
         }
 
         $user_array = array(
-            'query_name' => 'create_user_load',
             'table' => 'users',
-            'load' => true
         );
+
         $status = array('errors' => false);
         $user = $this->get_data_as_object($user_array); //this is a loaded cortex mapper
         $user_fields = $this->get_user_fields();
         foreach($userDatum as $k => $v) {
-            if($k != 'site_id' && $k != 'user_role_id' && !empty($user_fields[$k])) {
-                $user->$k = $v;
-            } else {
-                //todo create a write_log function
-                $status['errors'] = $k. ' non-existent';
-                error_log(__CLASS__ . '::' . __FUNCTION__ . '(Line: ' . __LINE__ . ') - field '.$k.' does not exist on the table. Please create the field before trying gto write to it.');
-                continue;
+
+            if($k != 'site_id' && $k != 'user_role_id') {
+                if(!empty($user_fields[$k])) {
+                    $user->$k = $v;
+                } else {
+                    //todo create a write_log function
+                    $status['errors'] = $k. ' non-existent';
+                    error_log(__CLASS__ . '::' . __FUNCTION__ . '(Line: ' . __LINE__ . ') - field '.$k.' does not exist on the table. Please create the field before trying gto write to it.');
+                    continue;
+                }
             }
         }
         $user->save();
         $status['user']  = clone($user); //we just want that one variable.
         $user_id = $status['user']->id;
+        error_log($this->fw->stringify($status['user']->id));
         $user->reset();
         $status['completed'] = 'Success: User '.$user_id.' created';
         $user = false; //PDO method to close the db connection and clear the old user mapper to save memory.
@@ -134,13 +138,12 @@ class users extends \core\controller_model
             die('Add User To Site: User ID and a Site ID must be provided.');
         }
 
-        $site_user_array = array(
-            'query_name' => 'create_site_user_'.$user_id,
+        $site_array = array(
             'table' => 'site_users',
-            'load' => true
         );
 
-        $site_user = $this->get_data_as_object($site_user_array); //this is a loaded cortex mapper
+        $site_user = $this->get_data_as_object($site_array); //this is a loaded cortex mapper
+        //error_log($this->fw->stringify($site_user));
         $site_user->user_id = $user_id;
         $site_user->site_id = $site_id;
         $site_user->user_role_id = $user_role_id;
