@@ -93,7 +93,7 @@ class users extends \core\controller_model
         */
         $site_id = (int) $userDatum['site_id'];
         if(empty($userDatum['password']) || !$site_id || empty($userDatum['email'])) {
-            die('Create User Error: A Password, Site ID, and Email must be provided.');
+            return array('code'=>412, 'data'=>'', 'msg'=>'A Password, Site ID, and Email must be provided.');
         }
 
         $user_array = array(
@@ -115,7 +115,7 @@ class users extends \core\controller_model
 
                 } else {
                     //todo create a write_log function
-                    $status['errors'][] = $k. ' non-existent';
+                    $status['errors'][] = $k. ' non-existent; skipped';
                     error_log(__CLASS__ . '::' . __FUNCTION__ . '(Line: ' . __LINE__ . ') - field '.$k.' does not exist on the table. Please create the field before trying to write to it.');
                     continue;
                 }
