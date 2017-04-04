@@ -58,6 +58,155 @@ class controller_model extends \Prefab
         return $path;
     }
 
+	
+   /**
+    * get_select_query
+	*
+	* This function properly compiles a SELECTquery using events to modify the parameters.
+	* There are 3 ways to call this function:
+	*	1 ) With all of the needed parameters filled as intended, for example, get_select_query('users', null,'id=2')
+	*	2 ) With a query in the $table parameter, such as get_select('SELECT * FROM users WHERE id=2');
+	*	3 ) With an array in the first parameter, where the indexes match the params, such as:
+	*	get_select( array( 'table'=> 'users', 'where' => 'id=2' ) );
+	*
+	*	Please note that if select is null, SELECT * will be used. If table is empty, the function will fail.
+	*	If any other parameter is empty, it will be omitted.
+	*
+	* @param mised $table either the table name, the full query or an array of parameters
+	* @param string $select the SELECT part of the query. Can either be with or without the SELECT.
+	*				 Ignored if "SELECT" is found in $table
+	* @param string $where the WHERE part of the query. Can either be with or without the WHERE.
+	*				 Ignored if "WHERE" is found in previous parameters
+	* @param string $groupby the GROUP BY part of the query. Can either be with or without the GROUP BY.
+	*				 Ignored if "GROUP BY" is found in previous parameters
+	* @param string $orderby the ORDER BY part of the query. Can either be with or without the ORDER BY.
+	*				 Ignored if "ORDER BY" is found in previous parameters
+	* @param string $limit the LIMIT part of the query. Can either be with or without the LIMIT.
+	*				 Ignored if "LIMIT" is found in previous parameters
+	* @return string returns the built query 
+	* @author: Martin-Pierre Frenette <mpfrenette@gmail.com>
+	*/
+    public function get_select_query( $table,$select = null, $where = null, $groupby = null, $orderby = null, $limit = null){
+
+    	if ( is_array($table) ){
+    		if ( !empty($table['table']) && !is_array($table['table']) ){
+    			$args = $table;
+    			$table = $args['table'];
+				$select = !empty($args['select'])?$args['select']: null;
+				$where = !empty($args['where'])?$args['where']: null;
+				$groupby = !empty($args['groupby'])?$args['groupby']: null;
+				$orderby = !empty($args['orderby'])?$args['orderby']: null;
+				$limit = !empty($args['limit'])?$args['limit']: null;
+    		}
+    		else{
+    			return false;
+    		}
+    	}
+
+
+    	$query = '';
+
+    	// First, process the table and the select parameters.
+    	$table = $this->event->emit('controller_model_get_select_query_select_' . $table, $table);
+    	$select = $this->event->emit('controller_model_get_select_query_select_' . $table, $select);
+    	if ( strpos($table, 'SELECT') === false){
+    		// we only check the select parameter if the table doesn't have one yet... 
+
+	    	// if select is empty, select everything
+    		if ( empty($select)){
+	    		$query .= 'SELECT * ';
+			}
+    		// If we do not have SELECT in it, prepend SELECT
+	    	else if ( strpos($select, 'SELECT') === false){
+	    		$query .= 'SELECT '. $select. ' ';
+	    	}
+	    	else if ( !empty($select)){
+	    		$query .= $select. ' ';
+	    	}
+
+			// if table doesn't contain SELECT, add it with the FROM keyword.			
+			$query .= ' FROM '. $table. ' ';
+		}
+		else{
+			// we have a select in the table section, which means that we might have a full query instead!
+			$query .= $table. ' ';	
+		}
+
+		// second, let's handle the where if there is one.
+		$where = $this->event->emit('controller_model_get_select_query_where_' . $table, $where);
+		if ( !empty($where)){
+
+			if ( strpos($query, 'WHERE') !== false){
+				// we already have a WHERE in our query!!! 
+			}
+			else if ( strpos($where, 'WHERE')){
+				// we have a WHERE in our where, so let's just add it directly
+				$query .= ' ' . $where;
+			}
+			else{
+				$query .= ' WHERE ' . $where;
+
+			}
+    	}
+
+		// third, let's handle the GROUP BY if there is one.
+		$groupby = $this->event->emit('controller_model_get_select_query_groupby_' . $table, $groupby);
+		if ( !empty($groupby)){
+
+			if ( strpos($query, 'GROUP BY') !== false){
+				// we already have a GROUP BY in our query!!! 
+			}
+			else if ( strpos($groupby, 'GROUP BY')){
+				// we have a WHERE in our where, so let's just add it directly
+				$query .= ' ' . $groupby;
+			}
+			else{
+				$query .= ' GROUP BY ' . $groupby;
+
+			}
+    	}
+
+		// fourth, let's handle the ORDER BY if there is one.
+		$orderby = $this->event->emit('controller_model_get_select_query_orderby_' . $table, $orderby);
+		if ( !empty($orderby)){
+
+			if ( strpos($query, 'ORDER BY') !== false){
+				// we already have a ORDER BY in our query!!! 
+			}
+			else if ( strpos($orderby, 'ORDER BY')){
+				// we have a WHERE in our where, so let's just add it directly
+				$query .= ' ' . $orderby;
+			}
+			else{
+				$query .= ' ORDER BY ' . $orderby;
+
+			}
+    	}
+
+    	// finally, let's handle the LIMIT if there is one.
+    	$limit = $this->event->emit('controller_model_get_select_query_limit_' . $table, $limit);
+		if ( !empty($limit)){
+
+
+
+			if ( strpos($query, 'LIMIT') !== false){
+				// we already have a LIMIT in our query!!! 
+			}
+			else if ( strpos($limit, 'LIMIT')){
+				// we have a WHERE in our where, so let's just add it directly
+				$query .= ' ' . $limit;
+			}
+			else{
+				$query .= ' LIMIT ' . $limit;
+
+			}
+    	}
+  		$query = $this->event->emit('controller_model_get_select_query_query_' . $table, $query);
+
+  		return $query;
+    }
+
+    
     public function get_data_as_object(array $options)
     {
         /*
