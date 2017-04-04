@@ -40,11 +40,15 @@ class json extends \core\controller_model
 
     function process_request($protocol = "ALL")
     {
-        $props = http::get_params();
+         $fw = $f3?:$this->fw;
+        $props = explode('/',$fw->get('PARAMS.0'));
+        array_shift($props);
+        if ( $props[0] == 'json' ){
+			array_shift($props);
+		}
+
         $wadl = new tadl();
         $w = $wadl->get_tadl('exposed');
-        unset($props[0]);
-        unset($props[1]);
         $namespace = "controllers"; //default namespace
         if (empty($props)) {
             // If it's just a /json call then we want to show all the callable functions.
