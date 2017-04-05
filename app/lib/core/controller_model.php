@@ -88,7 +88,7 @@ class controller_model extends \Prefab
                 //Query logic
                 $query = !empty($options['query']) ? $options['query'] : false;
                 $where = !empty($options['where']) ? $options['where'] : false;
-                if (!$query && !$this->fw->devoid($options['table'])) {
+                if (!$query && empty($options['table'])) {
                     return false;
                 } elseif (!$query) {
                     $query = "SELECT * FROM " . $options['table'];
@@ -100,7 +100,7 @@ class controller_model extends \Prefab
                 if (!empty($options['pagination']['start'])) {
                     $start = $options['pagination']['start'];
                     $limit = " LIMIT $start";
-                    if (!$this->fw->devoid($options['pagination']['length'])) {
+                    if (!empty($options['pagination']['length'])) {
                         $length = $options['pagination']['length'];
                         $limit .= ", $length";
                     }
@@ -201,28 +201,44 @@ class controller_model extends \Prefab
         return $options;
     }
 
-    public function get_records_by_key_value()
+    /*
+    	This function allows to retrieve records using a custom where or a custom query.
+    	Right now, it only supports a single parameter, which has to be an array with either:
+    	 - table and where defined, in which case it will search the table with the where
+    	 - query in which case it will execute the exact query
+
+    	 If you do not specify the type, sql will be assumed.
+    */
+	public function get_records_by_key_value()
     {
         $retVal = false;
         if ($args = $this->get_parameters(func_get_args())) {
+        	$args = $args[0];
+
             $options = array(
-                'type' => !$this->fw->devoid($args['type']) ? $args['type'] : 'sql',
+                'type' => !empty($args['type']) ? $args['type'] : 'sql',
             );
             $load = false;
             switch ($options['type']) {
                 case 'sql':
-                    $options['query'] = !$this->fw->devoid($args['query']) ? $args['query'] : false;
-                    $options['bind_array'] = $args['bind_array'];
-                    break;
+                	if ( !empty($args['query'])){
+                    	$options['query'] = $args['query'];
+                	}
+                	else{
+                  		$options['table']  = !empty($args['table']) ? $args['table'] : 'false';
+	              		$options['where']  = !empty($args['where']) ? $args['where'] : false;
+                	}
+                    $options['bind_array'] = !empty($args['bind_array']) ? $args['bind_array'] : false;
+                break;
                 case 'mapper':
                 case 'cortex':
                     $load = true;
-                    $options['table'] = !$this->fw->devoid($args['table']) ? $args['table'] : false;
+                    $options['table'] = !empty($args['table']) ? $args['table'] : false;
                     break;
             }
             if ($retVal = $this->get_data_as_object($options)) {
                 if ($load) {
-                    $retVal->load(!$this->fw->devoid($args['bind_array']) ? $args['bind_array'] : false);
+                    $retVal->load(!empty($args['bind_array']) ? $args['bind_array'] : false);
                     if ($retVal->dry()) {
                         $retVal = false;
                     }
@@ -232,15 +248,16 @@ class controller_model extends \Prefab
         return $retVal;
     }
 
+
     public function new_record()
     {
         $retVal = false;
         if ($args = $this->get_parameters(func_get_args())) {
             $options = array(
-                'type' => (!$this->fw->devoid($args['type']) && $args['type'] != "sql") ? $args['type'] : 'cortex',
-                'table' => !$this->fw->devoid($args['table']) ? $args['table'] : false,
+                'type' => (!empty($args['type']) && $args['type'] != "sql") ? $args['type'] : 'cortex',
+                'table' => !empty($args['table']) ? $args['table'] : false,
             );
-            $fields = (!$this->fw->devoid($args['fields']) && is_array($args['fields'])) ? $args['fields'] : false;
+            $fields = (!empty($args['fields']) && is_array($args['fields'])) ? $args['fields'] : false;
             if (!$fields) {
                 error_log('Could not add new records to table: ' . $options['table'] . '. Code: 409,  Msg: Missing fields array.');
                 return false;
@@ -268,15 +285,15 @@ class controller_model extends \Prefab
         $retVal = false;
         if ($args = $this->get_parameters(func_get_args())) {
             $options = array(
-                'type' => (!$this->fw->devoid($args['type']) && $args['type'] != "sql") ? $args['type'] : 'cortex',
-                'table' => !$this->fw->devoid($args['table']) ? $args['table'] : false,
+                'type' => (!empty($args['type']) && $args['type'] != "sql") ? $args['type'] : 'cortex',
+                'table' => !empty($args['table']) ? $args['table'] : false,
             );
-            $record_id = !$this->fw->devoid($args['record_id']) ? $args['record_id'] : false;
+            $record_id = !empty($args['record_id']) ? $args['record_id'] : false;
             if (!$record_id) {
                 error_log('Could not add update records to table: ' . $options['table'] . '. Code: 409,  Msg: Missing Record ID.');
                 return false;
             }
-            $fields = (!$this->fw->devoid($args['fields']) && is_array($args['fields'])) ? $args['fields'] : false;
+            $fields = (!empty($args['fields']) && is_array($args['fields'])) ? $args['fields'] : false;
             if (!$fields) {
                 error_log('Could not update records to table: ' . $options['table'] . '. Code: 409,  Msg: Missing fields array.');
                 return false;
