@@ -58,6 +58,107 @@ class controller_model extends \Prefab
         return $path;
     }
 
+    
+    
+    
+       /**
+    * get_select_query
+	*
+	* This function properly compiles an UPDATE query using events to modify the parameters.
+	*
+	* Please note that $updatedfields is a an associative array of fields and their new values.
+	*
+	*
+	* @param mixed $table the table name or an array with the parameters
+	* @param string $where the WHERE part of the query. Can either be with or without the WHERE.
+	*				 Ignored if "WHERE" is found in previous parameters
+	* @param array $updatedfields the field names associated to their new values.
+	* @param string $limit the LIMIT part of the query. Can either be with or without the LIMIT.
+	*				 Ignored if "LIMIT" is found in previous parameters
+	* @return string returns the built query 
+	* @author: Martin-Pierre Frenette <mpfrenette@gmail.com>
+	*/
+    public function get_update_query( $table,$where = null, $updatedfields= array(), $limit = null){
+
+    	if ( is_array($table) ){
+    		if ( !empty($table['table']) && !is_array($table['table']) ){
+    			$args = $table;
+    			$table = $args['table'];
+				$where = !empty($args['where'])?$args['where']: null;
+				$updatedfields = !empty($args['updatedfields'])?$args['updatedfields']: null;
+				$limit = !empty($args['limit'])?$args['limit']: null;
+    		}
+    		else{
+    			return false;
+    		}
+    	}
+
+    	$query = '';
+
+    	// First, process the table and the select parameters.
+    	$table = $this->event->emit('controller_model_get_update_query_table_' . $table, $table);
+    	if ( strpos($table, 'UPDATE') === false){
+			$query .= 'UPDATE '. $table. ' ';
+		}
+		else{
+			// we have a select in the table section, which means that we might have a full query instead!
+			$query .= $table. ' ';	
+		}
+
+		// second, we process the SET
+    	if ( strpos($query, ' SET ') === false){
+    		$updatedfields = $this->event->emit('controller_model_get_update_query_set_' . $table, $updatedfields);
+			if (!empty($updatedfields) && is_array($updatedfields) && count($updatedfields) > 0)	{
+
+					$setvalues = array();
+					foreach($updatedfields as $key => $value)	{
+						$setvalues[] = $key.'="'.mysql_real_escape_string($value).'"';
+					}
+
+					$query .= ' SET ';
+					$query .= implode(',',$setvalues);
+			}
+		}
+
+
+		// third, let's handle the where if there is one.
+		$where = $this->event->emit('controller_model_get_update_query_where_' . $table, $where);
+		if ( !empty($where)){
+			if ( strpos($query, 'WHERE') !== false){
+				// we already have a WHERE in our query!!! 
+			}
+			else if ( strpos($where, 'WHERE')){
+				// we have a WHERE in our where, so let's just add it directly
+				$query .= ' ' . $where;
+			}
+			else{
+				$query .= ' WHERE ' . $where;
+
+			}
+    	}
+
+    	// finally, let's handle the LIMIT if there is one.
+    	$limit = $this->event->emit('controller_model_get_update_query_limit_' . $table, $limit);
+		if ( !empty($limit)){
+			if ( strpos($query, 'LIMIT') !== false){
+				// we already have a LIMIT in our query!!! 
+			}
+			else if ( strpos($limit, 'LIMIT')){
+				// we have a WHERE in our where, so let's just add it directly
+				$query .= ' ' . $limit;
+			}
+			else{
+				$query .= ' LIMIT ' . $limit;
+
+			}
+    	}
+  		$query = $this->event->emit('controller_model_get_update_query_query_' . $table, $query);
+
+  		return $query;
+    }
+
+
+        
     public function get_data_as_object(array $options)
     {
         /*
