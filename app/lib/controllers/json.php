@@ -48,15 +48,22 @@ class json extends \core\controller_model
 		}
 
         $wadl = new tadl();
-        $w = $wadl->get_tadl('exposed');
+        
+        unset($props[0]);
+        unset($props[1]);
+
         $namespace = "controllers"; //default namespace
         if (empty($props)) {
             // If it's just a /json call then we want to show all the callable functions.
             // Other wise it will show only the GET functions.
+            // since we list, we only want the exposed functions!
+            $w = $wadl->get_tadl('exposed');
             $protocol = "ALL";
             $controller = 'tadl';
             $method = 'show';
         } else {
+            // but if we have parameters, we want to be able to also access the public ones!
+        	$w = $wadl->get_tadl('accessible');
             $controller = array_shift($props) ?: 'tadl';
             $method = array_shift($props) ?: 'show';
         }
