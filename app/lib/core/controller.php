@@ -29,9 +29,6 @@ class controller extends \Prefab
         $this->event = new \Event();
     }
 
-
-
-
     public function get_model_path($class_name, $namespace = false, $db_type = false)
     {
         if ($namespace) {

@@ -1,6 +1,8 @@
 <?php
 namespace controllers;
 
+use core\controller;
+
 class config
 {
     private $fw = false;
@@ -15,6 +17,7 @@ class config
     {
         $c = new config();
         $c->append_autoloader($cfg, $array_name);
+        //$c->load_extensions();
     }
 
     function config($cfg = false)
@@ -58,4 +61,14 @@ class config
         return $retVal;
     }
 
+    function load_extensions() {
+        //get site id
+        $c = new controller();
+        $site = $_SERVER['HTTP_HOST'];
+        $class = $c->get_model_path('routes', 'controller');
+        $response = $class::lookup_site_by_url($site);
+
+        //db lookup on site extensions
+
+    }
 }

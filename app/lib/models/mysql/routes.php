@@ -46,7 +46,6 @@ class routes extends \core\model {
         return $retVal;
     }
 
-
     public static function lookup_site_by_id ($id = false) {
         $query = array(
             'table' => "sites",

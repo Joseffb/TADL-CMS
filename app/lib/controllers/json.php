@@ -43,32 +43,35 @@ class json extends \core\controller
         $fw = $this->fw;
         $retVal = false;
         $props = explode('/',$fw->get('PARAMS.0'));
+
         array_shift($props);
         if ( $props[0] == 'json' ){
 			array_shift($props);
 		}
 
-        $tadl = new tadl();
-        
-        unset($props[0]);
-        unset($props[1]);
+        //\utils\debug::write_log($props);
+        //debug::pe($props);
 
+        $tadl = new tadl();
+        $w = $tadl->get_tadl('exposed');
         $namespace = "controllers"; //default namespace
+
         if (empty($props)) {
             // If it's just a /json call then we want to show all the callable functions.
             // Other wise it will show only the GET functions.
             // since we list, we only want the exposed functions!
-            $w = $tadl->get_tadl('exposed');
             $protocol = "ALL";
             $controller = 'tadl';
             $method = 'show';
         } else {
             // but if we have parameters, we want to be able to also access the public ones!
-        	$w = $tadl->get_tadl('accessible');
+            if($w2 = $tadl->get_tadl('accessible')) {
+                $w = array_merge($w, $w2);
+            }
             $controller = array_shift($props) ?: 'tadl';
             $method = array_shift($props) ?: 'show';
         }
-        //debug::pe($w[$namespace][$controller]['methods'][$method]);
+        //debug::pe($w);
         //get namespace
         if (!empty($w[$namespace][$controller]['methods'][$method])) {
             $mhd = $w[$namespace][$controller]['methods'][$method];
@@ -106,6 +109,7 @@ class json extends \core\controller
                 $args = $props;
             }
             $class = "\\" . $retVal['namespace'] . "\\" . $retVal['controller'];
+
             $c = new $class();
             $method = $retVal['method'];
             $result = $c->$method($args);

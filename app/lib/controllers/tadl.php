@@ -8,7 +8,7 @@
 
 namespace controllers;
 use utils\json;
-
+use utils\debug;
 //tiger address listing - list of all functions that can be used in json api
 
 class tadl extends \core\controller
@@ -55,14 +55,15 @@ class tadl extends \core\controller
     public function get_tadl($scope = 'all')
     {
         $this->event->emit('tadl_'.__FUNCTION__.'_start', false);
-        //todo pull from db
-        $wadl = $this->fw->exists('TADL') ? $this->fw->get('TADL') : false;
-        $wadl = $this->event->emit('tadl_'.__FUNCTION__.'_pull', $wadl);
-        if ($wadl && $scope != 'all') {
-            $wadl = $wadl[$scope];
+        $tadl = $this->fw->exists('TADL') ? $this->fw->get('TADL') : false;
+        $tadl = $this->event->emit('tadl_'.__FUNCTION__.'_pull', $tadl);
+
+        if ($tadl && $scope != 'all') {
+            $tadl = $tadl[$scope];
         }
-        $wadl = $this->event->emit('tadl_'.__FUNCTION__.'_end', $wadl);
-        return $wadl;
+        $tadl = $this->event->emit('tadl_'.__FUNCTION__.'_end', $tadl);
+        //debug::pe($tadl);
+        return $tadl;
     }
 
     /**
@@ -72,14 +73,14 @@ class tadl extends \core\controller
     {
         $t = new tadl();
         $t->event->emit('tadl_'.__FUNCTION__.'_start', false);
-        $wadl = $t->get_tadl();
-        $wadl = $t->event->emit('tadl_'.__FUNCTION__.'_pull', $wadl);
-        $wadl[$scope][$namespace][$controller]['methods'][$method]['namespace'] = $namespace;
-        $wadl[$scope][$namespace][$controller]['methods'][$method]['controller'] = $controller;
-        $wadl[$scope][$namespace][$controller]['methods'][$method]['comment'] = $comment;
-        $wadl[$scope][$namespace][$controller]['methods'][$method]['args'] = $args_expected;
-        $wadl[$scope][$namespace][$controller]['methods'][$method]['protocols'] = $protocols;
-        $wadl = $t->event->emit('tadl_'.__FUNCTION__.'_end', $wadl);
-        $t->fw->set('TADL', $wadl);
+        $tadl = $t->get_tadl();
+        $tadl = $t->event->emit('tadl_'.__FUNCTION__.'_pull', $tadl);
+        $tadl[$scope][$namespace][$controller]['methods'][$method]['namespace'] = $namespace;
+        $tadl[$scope][$namespace][$controller]['methods'][$method]['controller'] = $controller;
+        $tadl[$scope][$namespace][$controller]['methods'][$method]['comment'] = $comment;
+        $tadl[$scope][$namespace][$controller]['methods'][$method]['args'] = $args_expected;
+        $tadl[$scope][$namespace][$controller]['methods'][$method]['protocols'] = $protocols;
+        $tadl = $t->event->emit('tadl_'.__FUNCTION__.'_end', $tadl);
+        $t->fw->set('TADL', $tadl);
     }
 }
