@@ -22,6 +22,24 @@ body {
     border-left: 1px solid #e7e7e7;
   }
 }
+.navbar {
+    border-bottom: none;
+}
+.navbar:after {
+    position: absolute;
+    bottom: -.0em;
+    left: 250px;
+    width: 100%;
+    border-bottom: solid 1px #e7e7e7;
+    content: '';
+}
+.navbar-brand {
+    padding-top:0px;
+}
+.navbar-brand img{
+    height:100px;
+}
+
 .navbar-top-links {
   margin-right: 0;
 }
@@ -104,7 +122,7 @@ body {
     z-index: 1;
     position: absolute;
     width: 250px;
-    margin-top: 51px;
+    margin-top: 100px;
   }
   .navbar-top-links .dropdown-messages,
   .navbar-top-links .dropdown-tasks,
