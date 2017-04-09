@@ -29,7 +29,7 @@ body {
     position: absolute;
     bottom: -.0em;
     left: 250px;
-    width: 100%;
+    width: calc(100% - 250px);
     border-bottom: solid 1px #e7e7e7;
     content: '';
 }

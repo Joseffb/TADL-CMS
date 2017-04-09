@@ -2,7 +2,7 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>TADL - Black Queen</title>
+    <title>TADL - Black Knight Theme</title>
     <script src="https://unpkg.com/vue"></script>
 
     <meta charset="utf-8">
@@ -12,19 +12,19 @@
     <meta name="author" content="">
 
     <!-- Bootstrap Core CSS -->
-    <link href="BlackQueen/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="BlackKnight/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- MetisMenu CSS -->
-    <link href="BlackQueen/assets/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+    <link href="BlackKnight/assets/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="BlackQueen/assets/css/sb-admin-2.css" rel="stylesheet">
+    <link href="BlackKnight/assets/css/sb-admin-2.css" rel="stylesheet">
 
     <!-- Morris Charts CSS -->
-    <link href="BlackQueen/assets/vendor/morrisjs/morris.css" rel="stylesheet">
+    <link href="BlackKnight/assets/vendor/morrisjs/morris.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
-    <link href="BlackQueen/assets/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="BlackKnight/assets/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -37,7 +37,8 @@
 <body>
 <div id="wrapper">
     <navigation></navigation>
-    <inside></inside>
+    <!-- Todo setup the route to pull main page name-->
+    <dashboard></dashboard>
     <foot></foot>
 </div>
 
@@ -80,23 +81,23 @@ foreach ($names as $name) {
 
 ?>
 <!-- jQuery -->
-<script src="BlackQueen/assets/vendor/jquery/jquery.min.js"></script>
+<script src="BlackKnight/assets/vendor/jquery/jquery.min.js"></script>
 
 <!-- Bootstrap Core JavaScript -->
-<script src="BlackQueen/assets/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="BlackKnight/assets/vendor/bootstrap/js/bootstrap.min.js"></script>
 
 <!-- Metis Menu Plugin JavaScript -->
-<script src="BlackQueen/assets/vendor/metisMenu/metisMenu.min.js"></script>
+<script src="BlackKnight/assets/vendor/metisMenu/metisMenu.min.js"></script>
 
 <!-- Morris Charts JavaScript-->
-<script src="BlackQueen/assets/vendor/raphael/raphael.min.js"></script>
-<script src="BlackQueen/assets/vendor/morrisjs/morris.min.js"></script>
-<script src="BlackQueen/assets/data/morris-data.js"></script>
+<script src="BlackKnight/assets/vendor/raphael/raphael.min.js"></script>
+<script src="BlackKnight/assets/vendor/morrisjs/morris.min.js"></script>
+<script src="BlackKnight/assets/data/morris-data.js"></script>
 
 <!-- Custom Theme JavaScript -->
-<script src="BlackQueen/assets/js/sb-admin-2.js"></script>
+<script src="BlackKnight/assets/js/sb-admin-2.js"></script>
 
-<script src="BlackQueen/assets/js/app.js"></script>
+<script src="BlackKnight/assets/js/app.js"></script>
 
 
 </body>
