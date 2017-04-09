@@ -14,7 +14,7 @@ namespace models\mysql;
 
 use core\controller;
 
-class routes extends \core\controller {
+class routes extends \core\model {
 
     public $fw = null;
     public $admin_theme = null;

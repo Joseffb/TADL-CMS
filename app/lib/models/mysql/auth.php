@@ -14,7 +14,7 @@ namespace models\mysql;
 
 use core\controller;
 
-class auth extends \core\controller{
+class auth extends \core\model{
 
     public $fw = null;
     public $admin_theme = null;
