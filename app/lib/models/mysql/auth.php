@@ -64,5 +64,4 @@ class auth extends \core\model{
         }
         return $retVal;
     }
-
 }

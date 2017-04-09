@@ -98,6 +98,7 @@ class users extends \core\controller
 
         $user_array = array(
             'table' => 'users',
+            'method' => 'load'
         );
         $bad_email = false;
         $status = array();
@@ -112,7 +113,6 @@ class users extends \core\controller
                     } else {
                         $user->$k = $v;
                     }
-
                 } else {
                     //todo create a write_log function
                     $status['errors'][] = $k. ' non-existent; skipped';
@@ -148,6 +148,7 @@ class users extends \core\controller
 
         $site_array = array(
             'table' => 'site_users',
+            'method' => 'load'
         );
 
         $site_user = $this->get_data($site_array); //this is a loaded cortex mapper
