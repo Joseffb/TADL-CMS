@@ -89,7 +89,7 @@ class controller extends \Prefab
         $DB = !empty($options['DB']) ? $this->fw->get($options['DB']) : $this->db;
 
         //build our values
-        $where = $this->build_where_statement($options['where'], $options['bind'], $query_name);
+        $where = !empty($options['$where'])?$this->build_where_statement($options['where'], $options['bind'], $query_name):null;
         $orderBy = !empty($options['orderBy'])?$this->build_order_statement($options['orderBy'], $query_name):false;
         $groupBy = !empty($options['groupBy'])?$this->build_group_statement($options['groupBy'], $query_name):false;
         $limitBy = !empty($options['limit'])?$this->build_limit_statement($options['limit'], $query_name):false;

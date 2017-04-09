@@ -12,6 +12,8 @@
 
 namespace controllers;
 
+use utils\debug;
+
 class routes extends \core\controller
 {
 
@@ -101,10 +103,10 @@ class routes extends \core\controller
         $class = $this->get_model_path(__CLASS__, __NAMESPACE__);
         $response = $class::lookup_site_by_url($site);
 
-/*        echo "<pre>";
+        //echo "<pre>";
         //echo debug_print_backtrace();
-        var_dump($response);
-        echo "</pre>";*/
+        //var_dump($response->id);
+        //echo "</pre>";
 
         if ($response) {
             $this->set_site_id($response->id);

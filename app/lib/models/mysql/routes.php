@@ -14,6 +14,7 @@ namespace models\mysql;
 
 use core\controller;
 
+use utils\debug;
 class routes extends \core\model {
 
     public $fw = null;
@@ -31,7 +32,8 @@ class routes extends \core\model {
 
         $query = array(
             'table' => "sites",
-            'where' => array('url = ? LIMIT 1'),
+            'where' => array('url = ?'),
+            'limit' => 1,
             'bind_array' =>  array($site),
         );
 
@@ -39,9 +41,10 @@ class routes extends \core\model {
         // event_login_via_user_password_alter_query
         $a = new controller();
         $response = $a->get_data($query);
+//debug::pe($response[0]->id);
         $retVal = false;
         if($response) {
-          $retVal = $response;
+          $retVal = $response[0];
         }
         return $retVal;
     }
@@ -49,7 +52,8 @@ class routes extends \core\model {
     public static function lookup_site_by_id ($id = false) {
         $query = array(
             'table' => "sites",
-            'where' => array('id = ? LIMIT 1'),
+            'where' => array('id = ?'),
+            'limit' => 1,
             'bind_array' =>  array($id),
         );
         // run query mod event here
@@ -58,7 +62,7 @@ class routes extends \core\model {
         $response = $a->get_data($query);
         $retVal = false;
         if($response) {
-            $retVal = $response;
+            $retVal = $response[0];
         }
         return $retVal;
     }
