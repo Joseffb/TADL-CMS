@@ -22,4 +22,23 @@ class debug {
             echo "<pre>";
         }
     }
+
+    static function write_log($msg, $die = false, $type = 'info') {
+        $fw = \Base::instance();
+        $prefix = array(
+            'error' => '!!!! ERROR !!!!: ',
+            'info' => '^INFO: ',
+            'debug' => "###### DEBUG MESSAGE: ",
+        );
+        if(is_array($msg)) {
+            $msg = $fw->stringify($msg);
+        }
+        $msg = $prefix[$type].$msg;
+
+        error_log($msg);
+
+        if($die) {
+            die($msg);
+        }
+    }
 }

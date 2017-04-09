@@ -1,7 +1,7 @@
 <?php
 namespace controllers;
 
-class theme extends \core\controller_model
+class theme extends \core\controller
 {
 
     private $js_namespace = "GLJS";

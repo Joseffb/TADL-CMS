@@ -11,7 +11,7 @@ use utils\json;
 
 //tiger address listing - list of all functions that can be used in json api
 
-class tadl extends \core\controller_model
+class tadl extends \core\controller
 {
     public $fw = FALSE;
     public function __construct()
@@ -40,8 +40,6 @@ class tadl extends \core\controller_model
     {
         $c = new tadl;
         $c->event->emit('tadl_json_register_start', false);
-        //todo maybe \core\controller_model should magically register these for its children?
-
         self::register('controllers', 'tadl', 'show', array('GET'), 'exposed', 'Send function information to JSON');
         $c->event->emit('tadl_json_register_end', false);
     }

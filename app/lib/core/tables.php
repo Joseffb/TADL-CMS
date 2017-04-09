@@ -48,18 +48,17 @@ class tables extends \DB\Cortex
     public function basic_audit_update($mapper)
     {
         $this->event->emit('tables_basic_audit_update_start', false);
-        $c = new controller_model();
+        $c = new controller();
         if (!$c->check_if_table_exists('audit_log')) {
             audit_log::setup();
         }
-        $c = new controller_model();
+        $c = new controller();
         $query = array(
             'query_name' => 'basic_audit_update',
             'table' => 'audit_log',
             'method' => 'load'
         );
-        //$audit = new \DB\SQL\Mapper($this->fw->db, 'audit_log');
-        $results = $c->get_data_as_object($query);
+        $results = $c->get_data($query);
         $results->name = $mapper->table();
         $results->record_id = $mapper->id;
         $results->touch('modified');
@@ -74,19 +73,18 @@ class tables extends \DB\Cortex
     {
 
         $this->event->emit('tables_detail_audit_update_start', false);
-        $c = new controller_model();
+        $c = new controller();
         if (!$c->check_if_table_exists('audit_log')) {
             audit_log::setup();
         }
-        $c = new controller_model();
+        $c = new controller();
         $query = array(
             'query_name' => 'detail_audit_update',
             'table' => 'audit_log',
             'method' => 'load'
         );
 
-        //$audit = new \DB\SQL\Mapper($this->fw->db, 'audit_log');
-        $results = $c->get_data_as_object($query);
+        $results = $c->get_data($query);
         $results->name = $mapper->table();
         $results->record_id = $mapper->id;
         $results->touch('modified');

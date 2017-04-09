@@ -12,7 +12,7 @@
 
 namespace controllers;
 
-class auth extends \core\controller_model
+class auth extends \core\controller
 {
     public $authenticated_id = FALSE;
     public $authenticated_type = FALSE;

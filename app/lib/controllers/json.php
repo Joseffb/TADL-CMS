@@ -11,7 +11,7 @@ namespace controllers;
 use utils\debug;
 use utils\http;
 
-class json extends \core\controller_model
+class json extends \core\controller
 {
     function request()
     {
@@ -40,14 +40,15 @@ class json extends \core\controller_model
 
     function process_request($protocol = "ALL")
     {
-         $fw = $f3?:$this->fw;
+        $fw = $this->fw;
+        $retVal = false;
         $props = explode('/',$fw->get('PARAMS.0'));
         array_shift($props);
         if ( $props[0] == 'json' ){
 			array_shift($props);
 		}
 
-        $wadl = new tadl();
+        $tadl = new tadl();
         
         unset($props[0]);
         unset($props[1]);
@@ -57,13 +58,13 @@ class json extends \core\controller_model
             // If it's just a /json call then we want to show all the callable functions.
             // Other wise it will show only the GET functions.
             // since we list, we only want the exposed functions!
-            $w = $wadl->get_tadl('exposed');
+            $w = $tadl->get_tadl('exposed');
             $protocol = "ALL";
             $controller = 'tadl';
             $method = 'show';
         } else {
             // but if we have parameters, we want to be able to also access the public ones!
-        	$w = $wadl->get_tadl('accessible');
+        	$w = $tadl->get_tadl('accessible');
             $controller = array_shift($props) ?: 'tadl';
             $method = array_shift($props) ?: 'show';
         }

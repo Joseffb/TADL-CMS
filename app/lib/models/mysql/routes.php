@@ -12,9 +12,9 @@
 
 namespace models\mysql;
 
-use core\controller_model;
+use core\controller;
 
-class routes extends \core\controller_model {
+class routes extends \core\controller {
 
     public $fw = null;
     public $admin_theme = null;
@@ -28,15 +28,17 @@ class routes extends \core\controller_model {
     public static function lookup_site_by_url ($url = false) {
         //we actually want to get what was requested.
         $site = $url?:$_SERVER['HTTP_HOST'];
+
         $query = array(
-            'type' => "sql",
-            'query' => "SELECT * FROM sites WHERE url = ? LIMIT 1", //should only bring back one result per site
+            'table' => "sites",
+            'where' => array('url = ? LIMIT 1'),
             'bind_array' =>  array($site),
         );
+
         // run query mod event here
         // event_login_via_user_password_alter_query
-        $a = new controller_model();
-        $response = $a->get_data_as_object($query);
+        $a = new controller();
+        $response = $a->get_data($query);
         $retVal = false;
         if($response) {
           $retVal = $response;
@@ -46,16 +48,15 @@ class routes extends \core\controller_model {
 
 
     public static function lookup_site_by_id ($id = false) {
-        //we actually want to get what was requested.
         $query = array(
-            'type' => "sql",
-            'query' => "SELECT * FROM sites WHERE id = ? LIMIT 1", //should only bring back one result per site
+            'table' => "sites",
+            'where' => array('id = ? LIMIT 1'),
             'bind_array' =>  array($id),
         );
         // run query mod event here
         // event_login_via_user_password_alter_query
-        $a = new controller_model();
-        $response = $a->get_data_as_object($query);
+        $a = new controller();
+        $response = $a->get_data($query);
         $retVal = false;
         if($response) {
             $retVal = $response;

@@ -6,7 +6,7 @@
  * Time: 9:48 AM
  */
 
-class index extends \core\controller_model{
+class index extends \core\controller{
     function root($f3) {
         //$d = new \tables\users();
         //echo $f3->db->log();

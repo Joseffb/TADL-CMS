@@ -9,10 +9,10 @@
 
 namespace controllers;
 
-use core\controller_model;
+use core\controller;
 use core\tables;
 
-class users extends \core\controller_model
+class users extends \core\controller
 {
 
     public $user_table_fields = false;
@@ -64,7 +64,7 @@ class users extends \core\controller_model
     {
         $u = new users();
         if($u->user_table_fields == FALSE || $force_refresh) {
-            $retVal = $u->event->emit('users_get_fields', $u->get_table_column_fields('users'));
+            $retVal = $u->event->emit('users_get_fields', $u->model->get_table_column_fields('users'));
             $u->user_table_fields = $retVal;
         } else {
             $retVal = $u->event->emit('users_get_fields', $u->user_table_fields );
@@ -101,7 +101,7 @@ class users extends \core\controller_model
         );
         $bad_email = false;
         $status = array();
-        $user = $this->get_data_as_object($user_array); //this is a loaded cortex mapper
+        $user = $this->get_data($user_array); //this is a loaded cortex mapper
         $user_fields = $this->get_user_fields();
         foreach($userDatum as $k => $v) {
             if($k != 'site_id' && $k != 'user_role_id') {
@@ -150,7 +150,7 @@ class users extends \core\controller_model
             'table' => 'site_users',
         );
 
-        $site_user = $this->get_data_as_object($site_array); //this is a loaded cortex mapper
+        $site_user = $this->get_data($site_array); //this is a loaded cortex mapper
         //error_log($this->fw->stringify($site_user));
         $site_user->user_id = $user_id;
         $site_user->site_id = $site_id;

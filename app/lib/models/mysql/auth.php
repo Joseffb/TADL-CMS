@@ -12,9 +12,9 @@
 
 namespace models\mysql;
 
-use core\controller_model;
+use core\controller;
 
-class auth extends \core\controller_model {
+class auth extends \core\controller{
 
     public $fw = null;
     public $admin_theme = null;
@@ -26,18 +26,17 @@ class auth extends \core\controller_model {
     }
 
     public static function lookup_user_authentication ($user_value, $lookup_field_value = "email") {
-        $a = new controller_model();
-        $site = $site?:$a->SITE_ID;
-        $where = " WHERE (" . mysql_real_escape_string($lookup_field_value) . " = :value and is_enabled = 1";
+        $a = new controller();
         $query = array(
-            'type' => "sql",
-            'query' => "SELECT * FROM users " . $where,
-            'bind_array' =>  array(":value"=>$user_value),
+            'query_name' => 'lookup_user_authentication',
+            'table' => 'users',
+            'where' => array($lookup_field_value . '= :value AND  is_enabled = 1'),
+            'bind'  => array(":value"=>$user_value)
         );
         // run query mod event here
         // event_login_via_user_password_alter_query
 
-        $response = $a->get_data_as_object($query);
+        $response = $a->get_data($query);
         $retVal = false;
         if($response) {
           $retVal = $response;
@@ -45,18 +44,20 @@ class auth extends \core\controller_model {
         return $retVal;
     }
     public static function lookup_api_authentication ($public_key, $lookup_field_value = "public_key") {
-        $a = new controller_model();
-        $site = $site?:$a->SITE_ID;
-        $where = " WHERE (" . mysql_real_escape_string($lookup_field_value) . " = :value and is_enabled = 1 and expire_date > CURRENT_DATE() ";
+        $a = new controller();
+        // run query mod event here
+        // event_login_via_user_password_alter_query
+
         $query = array(
-            'type' => "sql",
-            'query' => "SELECT * FROM api_keys " . $where,
-            'bind_array' =>  array(":value"=>$public_key),
+            'query_name' => 'lookup_user_authentication',
+            'table' => 'users',
+            'where' => array($lookup_field_value . '= :value AND is_enabled = 1 AND expire_date > CURRENT_DATE()'),
+            'bind'  => array(":value"=>$public_key)
         );
         // run query mod event here
         // event_login_via_user_password_alter_query
 
-        $response = $a->get_data_as_object($query);
+        $response = $a->get_data($query);
         $retVal = false;
         if($response) {
             $retVal = $response;

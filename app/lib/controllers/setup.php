@@ -9,7 +9,7 @@
 
 namespace controllers;
 
-class setup extends \core\controller_model
+class setup extends \core\controller
 {
     public static function json_register()
     {

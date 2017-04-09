@@ -7,7 +7,7 @@
    */
 
   namespace controllers;
-  class pages extends \core\controller_model{
+  class pages extends \core\controller{
 
       public function __construct() {
 

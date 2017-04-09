@@ -12,7 +12,7 @@
 
 namespace controllers;
 
-class routes extends \core\controller_model
+class routes extends \core\controller
 {
 
     public function __construct()
@@ -22,7 +22,7 @@ class routes extends \core\controller_model
         $this->set_admin_theme('RedQueen');
         $this->set_mobile_theme('MadHatter');
         $this->set_default_routes();
-        if($this->check_if_table_exists('sites')) {
+        if($this->model->check_if_table_exists('sites')) {
             //Tables most likely haven't been installed yet.
             $this->determine_site_id();
         }
