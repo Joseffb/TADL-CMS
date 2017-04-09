@@ -87,11 +87,11 @@ foreach ($names as $name) {
 <!-- Metis Menu Plugin JavaScript -->
 <script src="RedQueen/assets/vendor/metisMenu/metisMenu.min.js"></script>
 
-<!-- Morris Charts JavaScript
+<!-- Morris Charts JavaScript-->
 <script src="RedQueen/assets/vendor/raphael/raphael.min.js"></script>
 <script src="RedQueen/assets/vendor/morrisjs/morris.min.js"></script>
 <script src="RedQueen/assets/data/morris-data.js"></script>
--->
+
 <!-- Custom Theme JavaScript -->
 <script src="RedQueen/assets/js/sb-admin-2.js"></script>
 
