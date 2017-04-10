@@ -2,7 +2,7 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>TADL - Black Knight Theme</title>
+    <title>TADL - Red Queen Theme</title>
     <script src="https://unpkg.com/vue"></script>
 
     <meta charset="utf-8">
