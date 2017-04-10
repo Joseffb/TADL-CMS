@@ -12,19 +12,19 @@
     <meta name="author" content="">
 
     <!-- Bootstrap Core CSS -->
-    <link href="RedQueen/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//<?php echo $HOST; ?>/RedQueen/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- MetisMenu CSS -->
-    <link href="RedQueen/assets/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+    <link href="//<?php echo $HOST; ?>/RedQueen/assets/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="RedQueen/assets/css/RedQueen.css" rel="stylesheet">
+    <link href="//<?php echo $HOST; ?>/RedQueen/assets/css/RedQueen.css" rel="stylesheet">
 
     <!-- Morris Charts CSS -->
-    <link href="RedQueen/assets/vendor/morrisjs/morris.css" rel="stylesheet">
+    <link href="//<?php echo $HOST; ?>/RedQueen/assets/vendor/morrisjs/morris.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
-    <link href="RedQueen/assets/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="//<?php echo $HOST; ?>/RedQueen/assets/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -81,23 +81,23 @@ foreach ($names as $name) {
 
 ?>
 <!-- jQuery -->
-<script src="RedQueen/assets/vendor/jquery/jquery.min.js"></script>
+<script src="//<?php echo $HOST; ?>/RedQueen/assets/vendor/jquery/jquery.min.js"></script>
 
 <!-- Bootstrap Core JavaScript -->
-<script src="RedQueen/assets/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="//<?php echo $HOST; ?>/RedQueen/assets/vendor/bootstrap/js/bootstrap.min.js"></script>
 
 <!-- Metis Menu Plugin JavaScript -->
-<script src="RedQueen/assets/vendor/metisMenu/metisMenu.min.js"></script>
+<script src="//<?php echo $HOST; ?>/RedQueen/assets/vendor/metisMenu/metisMenu.min.js"></script>
 
 <!-- Morris Charts JavaScript-->
-<script src="RedQueen/assets/vendor/raphael/raphael.min.js"></script>
-<script src="RedQueen/assets/vendor/morrisjs/morris.min.js"></script>
-<script src="RedQueen/assets/data/morris-data.js"></script>
+<script src="//<?php echo $HOST; ?>/RedQueen/assets/vendor/raphael/raphael.min.js"></script>
+<script src="//<?php echo $HOST; ?>/RedQueen/assets/vendor/morrisjs/morris.min.js"></script>
+<script src="//<?php echo $HOST; ?>/RedQueen/assets/data/morris-data.js"></script>
 
 <!-- Custom Theme JavaScript -->
-<script src="RedQueen/assets/js/sb-admin-2.js"></script>
+<script src="//<?php echo $HOST; ?>/RedQueen/assets/js/sb-admin-2.js"></script>
 
-<script src="RedQueen/assets/js/app.js"></script>
+<script src="//<?php echo $HOST; ?>/RedQueen/assets/js/app.js"></script>
 
 
 </body>
