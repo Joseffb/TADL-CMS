@@ -2,7 +2,7 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>Frontend TEST</title>
+    <title>TADL - Black Knight Theme</title>
     <script src="https://unpkg.com/vue"></script>
 
     <meta charset="utf-8">
@@ -18,7 +18,7 @@
     <link href="RedQueen/assets/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="RedQueen/assets/css/sb-admin-2.css" rel="stylesheet">
+    <link href="RedQueen/assets/css/RedQueen.css" rel="stylesheet">
 
     <!-- Morris Charts CSS -->
     <link href="RedQueen/assets/vendor/morrisjs/morris.css" rel="stylesheet">
@@ -37,7 +37,8 @@
 <body>
 <div id="wrapper">
     <navigation></navigation>
-    <inside></inside>
+    <!-- Todo setup the route to pull main page name-->
+    <dashboard></dashboard>
     <foot></foot>
 </div>
 
@@ -46,6 +47,7 @@
 $path = $UI . '/' . $ADMIN_THEME_URL . 'parts/';
 
 $dir = new \DirectoryIterator($path);
+//todo move this directory into the view controller with an event for plugins to hook into.
 $retVal = array();
 //$i = new auth();
 
@@ -87,15 +89,15 @@ foreach ($names as $name) {
 <!-- Metis Menu Plugin JavaScript -->
 <script src="RedQueen/assets/vendor/metisMenu/metisMenu.min.js"></script>
 
-<!-- Morris Charts JavaScript
+<!-- Morris Charts JavaScript-->
 <script src="RedQueen/assets/vendor/raphael/raphael.min.js"></script>
 <script src="RedQueen/assets/vendor/morrisjs/morris.min.js"></script>
 <script src="RedQueen/assets/data/morris-data.js"></script>
--->
+
 <!-- Custom Theme JavaScript -->
 <script src="RedQueen/assets/js/sb-admin-2.js"></script>
 
-<script src="/RedQueen/assets/js/app.js"></script>
+<script src="RedQueen/assets/js/app.js"></script>
 
 
 </body>

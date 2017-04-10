@@ -4,7 +4,11 @@
  * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap/blob/gh-pages/LICENSE)
  */
 body {
-  background-color: #f8f8f8;
+  background-color: #d9534f;
+}
+
+a{
+    color: #111111;
 }
 #wrapper {
   width: 100%;
@@ -22,6 +26,39 @@ body {
     border-left: 1px solid #e7e7e7;
   }
 }
+.navbar {
+    border-bottom: none;
+    background-color: #d9534f;
+}
+.navbar:after {
+    position: absolute;
+    bottom: -.0em;
+    left: 250px;
+    width: calc(100% - 250px);
+    border-bottom: solid 1px #e7e7e7;
+    content: '';
+}
+.navbar-brand {
+    padding-top:0px;
+}
+.navbar-brand img{
+    height:100px;
+    border-radius:15%;
+    /* Safari 4-5, Chrome 1-9 */
+    /* Can't specify a percentage size? Laaaaaame. */
+    background: -webkit-gradient(radial, center center, 0, center center, 460, from(#d9534f), to(#ddbcbc));
+
+    /* Safari 5.1+, Chrome 10+ */
+    background: -webkit-radial-gradient(circle, #c10003, #d9534f);
+
+    /* Firefox 3.6+ */
+    background: -moz-radial-gradient(circle, #c10003, #d9534f);
+
+    /* IE 10 */
+    background: -ms-radial-gradient(circle, #c10003, #d9534f);
+
+}
+
 .navbar-top-links {
   margin-right: 0;
 }
@@ -67,18 +104,37 @@ body {
   right: 0;
   left: auto;
 }
+
+.sidebar {
+    background-color: #d9534f;
+}
+
 .sidebar .sidebar-nav.navbar-collapse {
   padding-left: 0;
   padding-right: 0;
 }
+
+.sidebar ul li:hover, .sidebar ul li a.active:hover,{
+    background-color: #9a9999;
+}
+.sidebar-nav ul.nav-second-level:hover {
+    background-color: #d9534f;
+}
+.sidebar-nav ul.nav-second-level li:hover {
+    background-color: #d9534f;
+}
+.sidebar-nav li {
+    border-bottom-color: #9a9999;
+}
+
 .sidebar .sidebar-search {
   padding: 15px;
 }
 .sidebar ul li {
-  border-bottom: 1px solid #e7e7e7;
+  border-bottom: 1px solid #9a9999;
 }
-.sidebar ul li a.active {
-  background-color: #eeeeee;
+.sidebar ul li a.active ul {
+  background-color: #2f2e2e;
 }
 .sidebar .arrow {
   float: right;
@@ -104,7 +160,7 @@ body {
     z-index: 1;
     position: absolute;
     width: 250px;
-    margin-top: 51px;
+    margin-top: 100px;
   }
   .navbar-top-links .dropdown-messages,
   .navbar-top-links .dropdown-tasks,
@@ -118,13 +174,13 @@ body {
   transition: all .5s;
 }
 .btn-primary.btn-outline {
-  color: #428bca;
+  color: #d9534f;
 }
 .btn-success.btn-outline {
   color: #5cb85c;
 }
 .btn-info.btn-outline {
-  color: #5bc0de;
+  color: #d9534f;
 }
 .btn-warning.btn-outline {
   color: #f0ad4e;
