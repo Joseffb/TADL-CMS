@@ -4,7 +4,7 @@
  * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap/blob/gh-pages/LICENSE)
  */
 body {
-  background-color: #f8f8f8;
+  background-color: #2f2e2e;
 }
 #wrapper {
   width: 100%;
@@ -24,6 +24,7 @@ body {
 }
 .navbar {
     border-bottom: none;
+    background-color: #2f2e2e;
 }
 .navbar:after {
     position: absolute;
@@ -38,6 +39,21 @@ body {
 }
 .navbar-brand img{
     height:100px;
+    border:4px solid rgb(50,50,50);
+    border-radius:15%;
+    /* Safari 4-5, Chrome 1-9 */
+    /* Can't specify a percentage size? Laaaaaame. */
+    background: -webkit-gradient(radial, center center, 0, center center, 460, from(#1a82f7), to(#2F2727));
+
+    /* Safari 5.1+, Chrome 10+ */
+    background: -webkit-radial-gradient(circle, #1a82f7, #2F2727);
+
+    /* Firefox 3.6+ */
+    background: -moz-radial-gradient(circle, #1a82f7, #2F2727);
+
+    /* IE 10 */
+    background: -ms-radial-gradient(circle, #1a82f7, #2F2727);
+
 }
 
 .navbar-top-links {
@@ -85,18 +101,37 @@ body {
   right: 0;
   left: auto;
 }
+
+.sidebar {
+    background-color: #2f2e2e;
+}
+
 .sidebar .sidebar-nav.navbar-collapse {
   padding-left: 0;
   padding-right: 0;
 }
+
+.sidebar ul li:hover, .sidebar ul li a.active:hover,{
+    background-color: #9a9999;
+}
+.sidebar-nav ul.nav-second-level:hover {
+    background-color: #2f2e2e;
+}
+.sidebar-nav ul.nav-second-level li:hover {
+    background-color: #2f2e2e;
+}
+.sidebar-nav li {
+    border-bottom-color: #9a9999;
+}
+
 .sidebar .sidebar-search {
   padding: 15px;
 }
 .sidebar ul li {
-  border-bottom: 1px solid #e7e7e7;
+  border-bottom: 1px solid #9a9999;
 }
-.sidebar ul li a.active {
-  background-color: #eeeeee;
+.sidebar ul li a.active ul {
+  background-color: #2f2e2e;
 }
 .sidebar .arrow {
   float: right;

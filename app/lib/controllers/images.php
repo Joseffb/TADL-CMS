@@ -7,13 +7,13 @@
    */
 
   namespace controllers;
-  class pages extends \controllers\content {
+  class images extends \controllers\content {
 
       public function __construct() {
 
       }
 
-      public function get_page_record($id) {
+      public function get_image_record($id) {
 
       }
 

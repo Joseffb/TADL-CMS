@@ -7,16 +7,14 @@
    */
 
   namespace controllers;
-  class pages extends \controllers\content {
+  class files extends \core\controller {
 
       public function __construct() {
 
       }
 
-      public function get_page_record($id) {
+      public function get_file($id) {
 
       }
-
-
 
   }

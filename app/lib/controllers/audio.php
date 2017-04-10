@@ -7,13 +7,12 @@
    */
 
   namespace controllers;
-  class pages extends \controllers\content {
+  class audio extends \controllers\content {
 
       public function __construct() {
 
       }
-
-      public function get_page_record($id) {
+      public function get_audio_file($file) {
 
       }
 
