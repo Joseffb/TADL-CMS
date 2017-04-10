@@ -89,8 +89,8 @@ function load_vue_templates($folder_name, $ui_folder, $theme_url, $HOST) {
         $page = "dashboard";
     } else if(!file_exists($UI . $ADMIN_THEME_URL .'pages/'.$r[1].'.template')) {
         $page = "unknown";
-    }
-    echo "<$page></$page>"; ?>
+    } ?>
+    <?php echo "<$page></$page>"; ?>
     <foot></foot>
     <?php var_dump($UI . $ADMIN_THEME_URL .'pages/'.$r[1]);
     ?>
