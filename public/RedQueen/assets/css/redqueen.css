@@ -10,6 +10,12 @@ body {
 a{
     color: #111111;
 }
+
+
+.footer {
+    color:#111111;
+    float:right;
+}
 #wrapper {
   width: 100%;
 }

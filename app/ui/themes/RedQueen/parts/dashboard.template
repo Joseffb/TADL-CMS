@@ -21,11 +21,10 @@
         </div>
         <!-- /.col-lg-8 -->
         <div class="col-lg-4">
+            test
+            <chat></chat>
             <notification-panel></notification-panel>
             <donut-sales-chart></donut-sales-chart>
-            <chat></chat>
-
-
         </div>
         <!-- /.col-lg-4 -->
     </div>
