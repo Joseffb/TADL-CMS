@@ -32,15 +32,20 @@ function load_vue_templates($folder_name, $ui_folder, $theme_url, $HOST) {
                     Vue.component('$sname', {
                     template: '#$sname'
                 })
-
                 </script>";
     }
-
 }
 
-
-?>
-
+//Cheating here by doing the routing via php instead of Vue JS.
+//Todo move this theme routing from PHP to Vue JS.
+$r = explode("/",$URI);
+array_shift($r);
+$page = $r[1];
+if(empty($r[1])) {
+    $page = "dashboard";
+} else if(!file_exists($UI . $ADMIN_THEME_URL .'pages/'.$r[1].'.template')) {
+    $page = "unknown";
+} ?>
 <!DOCTYPE html>
 <html>
 <head lang="en">
@@ -80,20 +85,9 @@ function load_vue_templates($folder_name, $ui_folder, $theme_url, $HOST) {
 <body>
 <div id="wrapper">
     <navigation></navigation>
-    <!-- Todo setup the route to pull main page name-->
-    <?php
-    $r = explode("/",$URI);
-    array_shift($r);
-    $page = $r[1];
-    if(empty($r[1])) {
-        $page = "dashboard";
-    } else if(!file_exists($UI . $ADMIN_THEME_URL .'pages/'.$r[1].'.template')) {
-        $page = "unknown";
-    } ?>
     <?php echo "<$page></$page>"; ?>
     <foot></foot>
-    <?php var_dump($UI . $ADMIN_THEME_URL .'pages/'.$r[1]);
-    ?>
+
 </div>
 
 <?php
