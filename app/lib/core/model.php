@@ -175,6 +175,9 @@ class model extends \Prefab {
     }
 
     function get_table_column_fields($table) {
+      if(!$this->check_if_table_exists($table)) {
+        return false;
+      }
         $s = new \DB\SQL\Schema($this->db);
         $tbl = $s->alterTable($table);
         return $tbl->getCols(true);

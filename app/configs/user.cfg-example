@@ -14,11 +14,12 @@ AUTOLOAD = /this/should/append
 
 [database]
 DB_TYPE=MYSQL
-DB_HOST=localhost
+DB_HOST=localhost ;socket based
+DB_HOST=127.0.0.1 ; ip based
 DB_NAME=tiger123
 DB_USER=tiger123
 DB_PASSWORD=foobar
-DB_PORT=3302
+DB_PORT=3306
 
 ;[database.0]
 ;DB_TYPE=MYSQL
@@ -26,7 +27,7 @@ DB_PORT=3302
 ;DB_NAME=cms0
 ;DB_USER=johnDoe
 ;DB_PASSWORD=password
-;DB_PORT=3302
+;DB_PORT=3306
 
 ;[database.1]
 ;DB_TYPE=MYSQL
@@ -34,7 +35,7 @@ DB_PORT=3302
 ;DB_NAME=cms1
 ;DB_USER=johnDoe
 ;DB_PASSWORD=password
-;DB_PORT=3302
+;DB_PORT=3306
 
 ;[database.2]
 ;DB_TYPE=MYSQL
@@ -42,7 +43,7 @@ DB_PORT=3302
 ;DB_NAME=cms2
 ;DB_USER=johnDoe
 ;DB_PASSWORD=password
-;DB_PORT=3302
+;DB_PORT=3306
 
 [mailer]
 smtp.host = smtp.domain.com
@@ -68,9 +69,6 @@ on.jump = \MailTest::traceClick
 jumplinks = true
 ; path for storing mail dumps
 storage_path = logs/
-
-[routes]
-;
 
 [ASSETS]
 ;# if this is false, you need to manually put the group markers like

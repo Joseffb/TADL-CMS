@@ -4,6 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
+    "hash": "e97e0a88b2bc76f972658eff74ef89df",
     "content-hash": "7f54a4d9852ed1d2fc7567977c660e2a",
     "packages": [
         {
@@ -35,7 +36,7 @@
             ],
             "description": "A powerful yet easy-to-use PHP micro-framework designed to help you build dynamic and robust Web applications - fast!",
             "homepage": "http://fatfreeframework.com/",
-            "time": "2016-11-19T13:31:15+00:00"
+            "time": "2016-11-19 13:31:15"
         },
         {
             "name": "bcosca/fatfree-core",
@@ -66,7 +67,7 @@
             ],
             "description": "A powerful yet easy-to-use PHP micro-framework designed to help you build dynamic and robust Web applications - fast!",
             "homepage": "http://fatfreeframework.com/",
-            "time": "2016-11-19T13:22:46+00:00"
+            "time": "2016-11-19 13:22:46"
         },
         {
             "name": "ikkez/f3-assets",
@@ -101,7 +102,7 @@
                 "fatfree",
                 "minify"
             ],
-            "time": "2016-11-08T08:51:06+00:00"
+            "time": "2016-11-08 08:51:06"
         },
         {
             "name": "ikkez/f3-cortex",
@@ -139,7 +140,7 @@
                 "orm",
                 "sql"
             ],
-            "time": "2017-02-28T22:59:05+00:00"
+            "time": "2017-02-28 22:59:05"
         },
         {
             "name": "ikkez/f3-events",
@@ -209,7 +210,7 @@
                 "file",
                 "ftp"
             ],
-            "time": "2017-02-17T13:16:39+00:00"
+            "time": "2017-02-17 13:16:39"
         },
         {
             "name": "ikkez/f3-mailer",
@@ -244,7 +245,7 @@
                 "mail",
                 "smtp"
             ],
-            "time": "2016-10-23T13:49:15+00:00"
+            "time": "2016-10-23 13:49:15"
         },
         {
             "name": "ikkez/f3-opauth",
@@ -313,7 +314,7 @@
                 "fatfree",
                 "sql"
             ],
-            "time": "2016-01-29T11:24:45+00:00"
+            "time": "2016-01-29 11:24:45"
         },
         {
             "name": "martynbiz/phpdebugbar",
@@ -411,7 +412,7 @@
                 "debug",
                 "debugbar"
             ],
-            "time": "2017-01-05T08:46:19+00:00"
+            "time": "2017-01-05 08:46:19"
         },
         {
             "name": "psr/log",
@@ -458,7 +459,7 @@
                 "psr",
                 "psr-3"
             ],
-            "time": "2016-10-10T12:19:37+00:00"
+            "time": "2016-10-10 12:19:37"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -517,20 +518,20 @@
                 "portable",
                 "shim"
             ],
-            "time": "2016-11-14T01:06:16+00:00"
+            "time": "2016-11-14 01:06:16"
         },
         {
             "name": "symfony/var-dumper",
-            "version": "v3.2.6",
+            "version": "v3.2.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "4100f347aff890bc16b0b4b42843b599db257b2d"
+                "reference": "81dce20f69a8b40427e1f4e6462178df87cafc03"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/4100f347aff890bc16b0b4b42843b599db257b2d",
-                "reference": "4100f347aff890bc16b0b4b42843b599db257b2d",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/81dce20f69a8b40427e1f4e6462178df87cafc03",
+                "reference": "81dce20f69a8b40427e1f4e6462178df87cafc03",
                 "shasum": ""
             },
             "require": {
@@ -583,7 +584,7 @@
                 "debug",
                 "dump"
             ],
-            "time": "2017-02-20T13:45:48+00:00"
+            "time": "2017-03-12 16:07:05"
         },
         {
             "name": "xfra35/f3-access",
@@ -620,7 +621,7 @@
                 "fatfree",
                 "permissions"
             ],
-            "time": "2016-02-18T14:42:16+00:00"
+            "time": "2016-02-18 14:42:16"
         },
         {
             "name": "xfra35/f3-cron",
@@ -657,7 +658,7 @@
                 "fatfree",
                 "scheduling"
             ],
-            "time": "2015-12-23T17:29:43+00:00"
+            "time": "2015-12-23 17:29:43"
         }
     ],
     "packages-dev": [],
