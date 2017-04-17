@@ -87,7 +87,6 @@ if(empty($r[1])) {
     <navigation></navigation>
     <?php echo "<$page></$page>"; ?>
     <foot></foot>
-
 </div>
 
 <?php
