@@ -2,7 +2,7 @@
 
 // Kickstart the framework
 // Index.php can be anywhere pointing to this file.
-// We need to get the true path of this file, not the index.php that called it.
+// We need to get the true path of this file, and not the index.php path that called it.
 $path = dirname(realpath(__DIR__)) . "/";
 require_once($path . "vendor/autoload.php");
 $fw = base::instance();
