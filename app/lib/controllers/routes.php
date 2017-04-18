@@ -42,6 +42,7 @@ class routes extends \core\controller
 
     public function set_site_theme($theme = "Alice")
     {
+	    //\utils\debug::pe($theme);
         // todo : fire site theme hook event
         //$theme = do_action('set_site_theme')?:$theme;
         $this->fw->set("SITE_THEME", $theme);
@@ -109,6 +110,7 @@ class routes extends \core\controller
         //echo "</pre>";
 
         if ($response) {
+	        //\utils\debug::pe($response->theme);
             $this->set_site_id($response->id);
             $this->set_site_from_email($response->from_email);
             $this->set_site_admin_email($response->admin_email);
@@ -144,17 +146,24 @@ class routes extends \core\controller
     public function admin_root($fw) {
         //$this->fw->set('THEME_CSS',theme::get_localized_css());
         $this->fw->set('THEME_JS',theme::get_localized_js());
-        $theme = $fw->get('ADMIN_THEME_URL');
+        $theme = $this->fw->get('ADMIN_THEME_URL');
         $view=new \View();
         echo $view->render($theme.'index.php');
     }
 
     public function frontend_root($fw) {
+	    //$this->fw->set('ESCAPE', false);
         //$this->fw->set('THEME_CSS',theme::get_localized_css());
+	    $t = new theme();
+	    $t->set_js_var('theme_name',$this->fw->get('SITE_THEME'));
+	    $t->set_js_var('theme_url','//'.$this->fw->HOST.'/'.$this->fw->get('SITE_THEME_URL'));
+	    //$t->set_js_var('theme_name',$this->fw->get('SITE_THEME'));
+	    //$t->set_js_var('theme_name',$this->fw->get('SITE_THEME'));
+	    //$t->set_js_var('theme_name',$this->fw->get('SITE_THEME'));
         $this->fw->set('THEME_JS',theme::get_localized_js());
-        $theme = $fw->get('SITE_THEME_URL');
         $view=new \View();
-        echo $view->render($theme.'index.php');
+        echo $view->render($this->fw->get('SITE_THEME_URL').'index.php');
+
     }
 
     public function mobile_root_route($fw) {

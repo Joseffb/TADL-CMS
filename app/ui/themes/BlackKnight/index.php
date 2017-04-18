@@ -42,7 +42,7 @@ $r = explode("/",$URI);
 array_shift($r);
 $page = $r[1];
 if(empty($r[1])) {
-    $page = "dashboard";
+    $page = "frontpage";
 } else if(!file_exists($UI . $ADMIN_THEME_URL .'pages/'.$r[1].'.template')) {
     $page = "unknown";
 } ?>
