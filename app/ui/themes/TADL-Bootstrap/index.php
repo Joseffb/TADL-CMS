@@ -30,8 +30,12 @@
 			$sname = str_replace( '.template', '', $name );
 			echo " <script type='application/javascript'>
                     Vue.component('$sname', {
-                    props: ['TADL'],
-                    template: '#$sname'
+                    template: '#$sname',
+                      data: function() {
+						    return {
+						      CMS: TADL[0]
+						    }
+						  }
                 })
                 </script>";
 		}
@@ -41,12 +45,14 @@
 	//Todo move this theme routing from PHP to Vue JS.
 	$r = explode( "/", $URI );
 	array_shift( $r );
-	$page = $r[1];
-	if ( empty( $r[1] ) ) {
+	$page = $r[0];
+	$page = str_replace(array(".html", ".htm",".asp",".jsp",".go",".php"),"",$page);
+	if ( empty( $page ) || $page == "index" ) {
 		$page = "frontpage";
-	} else if ( ! file_exists( $UI . $ADMIN_THEME_URL . 'pages/' . $r[1] . '.template' ) ) {
+	} else if ( ! file_exists( $UI . $SITE_THEME_URL . 'pages/' . $page. '.template' ) ) {
 		$page = "default";
 	} ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

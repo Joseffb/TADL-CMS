@@ -156,7 +156,7 @@ class routes extends \core\controller
         //$this->fw->set('THEME_CSS',theme::get_localized_css());
 	    $t = new theme();
 	    $t->set_js_var('theme_name',$this->fw->get('SITE_THEME'));
-	    $t->set_js_var('theme_url','//'.$this->fw->HOST.'/'.$this->fw->get('SITE_THEME_URL'));
+	    $t->set_js_var('theme_url',$this->fw->SCHEME.'://'.$this->fw->HOST.'/'.$this->fw->get('SITE_THEME')."/");
 	    //$t->set_js_var('theme_name',$this->fw->get('SITE_THEME'));
 	    //$t->set_js_var('theme_name',$this->fw->get('SITE_THEME'));
 	    //$t->set_js_var('theme_name',$this->fw->get('SITE_THEME'));

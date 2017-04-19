@@ -1,6 +1,5 @@
+<header v-bind:class="['masthead', CMS.theme_name]" :style="{ backgroundImage: 'url(' + CMS.theme_url + 'img/home-bg.jpg)' }">
 
-<!-- Page Header -->
-<header class="masthead" v-bind:style="{ backgroundImage: 'url(' + theme_url + '/img/home-bg.jpg)' }">
 	<div class="container">
 		<div class="row">
 			<div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1">

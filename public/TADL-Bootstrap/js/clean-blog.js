@@ -41,9 +41,5 @@
 })(jQuery); // End of use strict
 
 new Vue({
-    el: '#vjs',
-    data: {
-      theme_url: TADL[0].theme_url,
-      theme_name: TADL[0].theme_name
-    }
+    el: '#vjs'
 });
