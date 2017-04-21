@@ -62,7 +62,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 
-	<title>Clean Blog - Start TADL Bootstrap Theme</title>
+	<title>TADL Alice Theme</title>
 
 	<!-- Bootstrap core CSS -->
 	<link
@@ -82,7 +82,7 @@
 
 	<!-- Custom styles for this template -->
 	<link
-		href="//<?php echo $HOST; ?>/<?php echo $SITE_THEME; ?>/css/clean-blog.min.css"
+		href="//<?php echo $HOST; ?>/<?php echo $SITE_THEME; ?>/css/alice.css"
 		rel="stylesheet">
 
 	<!-- Temporary navbar container fix -->
@@ -125,7 +125,7 @@
 
 <!-- Custom scripts for this template -->
 <script
-	src="//<?php echo $HOST; ?>/<?php echo $SITE_THEME; ?>/js/clean-blog.js"></script>
+	src="//<?php echo $HOST; ?>/<?php echo $SITE_THEME; ?>/js/alice.js"></script>
 </body>
 
 </html>
