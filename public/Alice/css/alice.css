@@ -162,10 +162,11 @@ header.masthead {
       header.masthead .site-heading,
       header.masthead .post-heading,
       header.masthead .page-heading {
-        padding: 150px 0; } }
+        padding: 100px 0; } }
   header.masthead .site-heading,
   header.masthead .page-heading {
-    text-align: center; }
+    text-align: center;
+    margin-top:100px;}
     header.masthead .site-heading h1,
     header.masthead .page-heading h1 {
       margin-top: 0;
