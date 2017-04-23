@@ -98,7 +98,7 @@
 		}
 	</style>	<?php echo View::instance()->raw($THEME_JS); ?>
 	<script src="https://unpkg.com/vue"></script>
-
+    <script src="https://cdn.jsdelivr.net/vue.resource/1.3.1/vue-resource.min.js"></script>
 
 </head>
 

@@ -38,7 +38,7 @@ class sites extends \core\tables
             'nullable' => FALSE,
             'default' => 'RedQueen',
         );
-        $this->fieldConf['mobile_theme'] = array(
+        $this->fieldConf['admin_bar_theme'] = array(
             'type' => 'VARCHAR256',
             'nullable' => FALSE,
             'default' => 'MadHatter',

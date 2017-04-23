@@ -22,9 +22,9 @@ class routes extends \core\controller
         parent::__construct();
         $this->set_site_theme('Alice');
         $this->set_admin_theme('RedQueen');
-        $this->set_mobile_theme('MadHatter');
+        $this->set_adminbar_theme('MadHatter');
         $this->set_default_routes();
-        if($this->model->check_if_table_exists('sites')) {
+        if ($this->model->check_if_table_exists('sites')) {
             //Tables most likely haven't been installed yet.
             $this->determine_site_id();
         }
@@ -36,29 +36,29 @@ class routes extends \core\controller
         //$theme = do_action('set_admin_theme')?:$theme;
         $this->fw->set("ADMIN_THEME", $theme);
         // todo : fire admin theme hook event
-        //$theme = do_action('set_admin_theme')?:$theme;
-        $this->fw->set("ADMIN_THEME_URL", "themes/".$theme."/");
+        //$theme = do_action('set_admin_theme_url')?:$theme;
+        $this->fw->set("ADMIN_THEME_URL", "themes/" . $theme . "/");
     }
 
     public function set_site_theme($theme = "Alice")
     {
-	    //\utils\debug::pe($theme);
+        //\utils\debug::pe($theme);
         // todo : fire site theme hook event
         //$theme = do_action('set_site_theme')?:$theme;
         $this->fw->set("SITE_THEME", $theme);
         // todo : fire admin theme hook event
-        //$theme = do_action('set_admin_theme')?:$theme;
-        $this->fw->set("SITE_THEME_URL",  "themes/".$theme."/");
+        //$theme = do_action('set_site_theme_url')?:$theme;
+        $this->fw->set("SITE_THEME_URL", "themes/" . $theme . "/");
     }
 
-    public function set_mobile_theme($theme = "MadHatter")
+    public function set_adminbar_theme($theme = "MadHatter")
     {
         // todo : fire site theme hook event
-        //$theme = do_action('set_site_theme')?:$theme;
-        $this->fw->set("MOBILE_THEME", $theme);
+        //$theme = do_action('set_adminbar_theme')?:$theme;
+        $this->fw->set("ADMIN_BAR_THEME", $theme);
         // todo : fire admin theme hook event
-        //$theme = do_action('set_admin_theme')?:$theme;
-        $this->fw->set("MOBILE_THEME_URL",  "themes/".$theme."/");
+        //$theme = do_action('set_adminbar_theme_url')?:$theme;
+        $this->fw->set("ADMIN_BAR_THEME_URL", "themes/" . $theme . "/");
     }
 
     public function set_site_url($url)
@@ -110,7 +110,7 @@ class routes extends \core\controller
         //echo "</pre>";
 
         if ($response) {
-	        //\utils\debug::pe($response->theme);
+            //\utils\debug::pe($response->theme);
             $this->set_site_id($response->id);
             $this->set_site_from_email($response->from_email);
             $this->set_site_admin_email($response->admin_email);
@@ -118,7 +118,7 @@ class routes extends \core\controller
             $this->set_site_url($response->url);
             $this->set_site_theme($response->theme);
             $this->set_admin_theme($response->admin_theme);
-            $this->set_mobile_theme($response->mobile_theme);
+            $this->set_adminbar_theme($response->admin_bar_theme);
         }
 
     }
@@ -143,39 +143,72 @@ class routes extends \core\controller
         return $retVal;
     }
 
-    public function admin_root($fw) {
+    public function admin_root($fw)
+    {
         //$this->fw->set('THEME_CSS',theme::get_localized_css());
-        $this->fw->set('THEME_JS',theme::get_localized_js());
+        $t = new theme();
+        $t->set_js_var('theme_name', $this->fw->get('ADMIN_THEME'));
+        $t->set_js_var('theme_url', $this->fw->SCHEME . '://' . $this->fw->get('SITE_URL') . '/' . $this->fw->get('ADMIN_THEME') . "/");
+        $this->fw->set('THEME_JS', theme::get_localized_js());
         $theme = $this->fw->get('ADMIN_THEME_URL');
-        $view=new \View();
-        echo $view->render($theme.'index.php');
+        $view = new \View();
+        echo $view->render($theme . 'index.php');
     }
 
-    public function frontend_root($fw) {
-	    //$this->fw->set('ESCAPE', false);
-        //$this->fw->set('THEME_CSS',theme::get_localized_css());
-	    $t = new theme();
-	    $t->set_js_var('theme_name',$this->fw->get('SITE_THEME'));
-	    $t->set_js_var('theme_url',$this->fw->SCHEME.'://'.$this->fw->HOST.'/'.$this->fw->get('SITE_THEME')."/");
-	    //$t->set_js_var('theme_name',$this->fw->get('SITE_THEME'));
-	    //$t->set_js_var('theme_name',$this->fw->get('SITE_THEME'));
-	    //$t->set_js_var('theme_name',$this->fw->get('SITE_THEME'));
-        $this->fw->set('THEME_JS',theme::get_localized_js());
-        $view=new \View();
-        echo $view->render($this->fw->get('SITE_THEME_URL').'index.php');
+    public function admin_bar_root($fw)
+    {
+        $t = new theme();
+        $t->set_js_var('theme_name', $this->fw->get('ADMIN_THEME'));
+        $t->set_js_var('theme_url', $this->fw->SCHEME . '://' . $this->fw->HOST . '/' . $this->fw->get('ADMIN_THEME') . "/");
+        $this->fw->set('THEME_JS', theme::get_localized_js());
+        $theme = $this->fw->get('ADMIN_BAR_THEME_URL');
+        $view = new \View();
+        return $view->render($theme . 'index.php');
+    }
+
+    public function admin_bar_load($fw)
+    {
+        $t = new theme();
+        $t->set_js_var('theme_name', $this->fw->get('ADMIN_BAR_THEME'));
+        $t->set_js_var('theme_url', $this->fw->SCHEME . '://' . $this->fw->HOST . '/' . $this->fw->get('ADMIN_BAR_THEME') . "/");
+        $js ="function loadJS(url, callback) {
+	var tag = document.createElement('script');
+	tag.setAttribute('src', url);
+	tag.onload = callback;
+	tag.onreadystatechange = function () {
+		if (this.readyState == 'complete' || this.readyState == 'loaded') callback();
+	};
+	document.getElementsByTagName('head')[0].appendChild(tag);
+}\n";
+        $js .= str_replace(array('<script>','</script>'),"",$this->fw->set('THEME_JS', theme::get_localized_js())).";\n";
+        $js .= "\nvar html = '".str_replace("'","\'",$this->admin_bar_root($this->fw))."';\ndocument.body.appendChild('<div class='tadl-admin-bar'>'+html+'</div>');";
+        header("Content-Type: application/javascript");
+        echo $js;
+    }
+
+    public function frontend_root($fw)
+    {
+        $t = new theme();
+        $t->set_js_var('theme_name', $this->fw->get('SITE_THEME'));
+        $t->set_js_var('theme_url', $this->fw->SCHEME . '://' . $this->fw->get('SITE_URL') . '/' . $this->fw->get('SITE_THEME') . "/");
+        $this->fw->set('THEME_JS', theme::get_localized_js());
+        $view = new \View();
+        echo $view->render($this->fw->get('SITE_THEME_URL') . 'index.php');
 
     }
 
-    public function mobile_root_route($fw) {
+    public function mobile_root_route($fw)
+    {
         // should use browser sniffing
     }
 
-
-    public function set_default_routes() {
+    public function set_default_routes()
+    {
         //themes
         $this->fw->route('GET @front_root: /*', 'controllers\routes->frontend_root');
-        $this->fw->route('GET @front: /cp*', 'controllers\routes->admin_root');
-        //$this->fw->route('GET @mobile_root: /mbl/*', 'controllers\routes->>mobile_root_route');
+        $this->fw->route('GET @admin: /cp*', 'controllers\routes->admin_root');
+        $this->fw->route('GET @admin_bar_js: /cp/load.js', 'controllers\routes->admin_bar_load');
+        $this->fw->route('GET @admin_bar: /cpb/*', 'controllers\routes->admin_bar_root');
     }
 
     // Root pages:
