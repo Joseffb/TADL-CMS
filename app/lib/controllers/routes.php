@@ -218,7 +218,7 @@ class routes extends \core\controller
 
 
         header("Content-Type: application/javascript");
-        echo \Web::instance()->minify($js);
+        echo $js;
     }
 
     public function frontend_root($fw)
