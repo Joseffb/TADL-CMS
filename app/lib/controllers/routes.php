@@ -208,7 +208,7 @@ class routes extends \core\controller
         $js .=  \controllers\theme::load_vue_components($components[0], false);
         $js .= $this->fw->get('THEME_JS') . ";\n";
         $html = "<div class='tadl-admin-bar'>".$index."</div>";
-        $js .= "var z = document.createElement('div');z.innerHTML = '".$html."'; \ndocument.getElementsByTagName('body')[0].appendChild(z);\n";
+        $js .= "var z = document.createElement('div');\nz.innerHTML = \"".preg_replace("/[\n\r]/",'',str_replace("\"","'",$html))."\"; \ndocument.getElementsByTagName('body')[0].appendChild(z);\n";
 
         //Load Admin Bar App JS
         if(file_exists($this->fw->UI . $theme . 'admin_bar.js')) {

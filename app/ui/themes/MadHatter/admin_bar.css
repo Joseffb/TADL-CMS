@@ -1,7 +1,12 @@
 #tadl_admin_bar {
-  height: 100%;
+  height: 100px;
   width: 33%;
   font: 100% Helvetica, sans-serif;
-  color: #333; }
+  color: #333;
+  background-color: #1ab7ea;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 9999; }
 
 /*# sourceMappingURL=admin_bar.css.map */
