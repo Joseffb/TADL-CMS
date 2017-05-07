@@ -59,12 +59,12 @@ class theme extends \core\controller
             if (!is_array($v)) {
                 $fill = $k . ":" . $v . ",";
             } else {
-                return $k . ": { " . $this->process_array_for_js($v) . "},";
+                return $k . ": { " . $this->process_js_array_values($v) . "},";
             }
         }
     }
 
-    public static function get_localized_js($type = 'global', $id = false)
+    public static function get_localized_js($type = 'global', $id = false, $tags = true)
     {
         $t = new theme();
         $js_array = $t->get_jsArray();
@@ -73,13 +73,87 @@ class theme extends \core\controller
         }
         $script = false;
         if (!empty($js_array) && is_array($js_array)) {
-            $script = $t->set_global_js($js_array);
+            $script = $t->set_global_js($js_array, $tags);
         }
         return $script;
     }
 
-	function set_global_js( array $js_array ) {
-		$r = '<script>';
+    static function load_vue_js ($folder_name, $ui_folder, $theme_url, $HOST = false, $header = true ) {
+        $dir = self::load_vue_path($folder_name, $ui_folder, $theme_url);
+        $retVal = self::load_vue_templates($dir[0], $dir[1]);
+        $retVal .= self::load_vue_components($dir[0], $header);
+        return $retVal;
+    }
+
+    static function load_vue_path ($folder_name, $ui_folder, $theme_url, $HOST = false) {
+        $path = $ui_folder  . $theme_url . $folder_name . '/';
+        $dir = new \DirectoryIterator( $path );
+        //$i = new auth();
+
+        //get the names
+        $names = array();
+        foreach ( $dir as $fileinfo ) {
+            if ( ! $fileinfo->isDot() ) {
+                $names[] = $fileinfo->getFilename();
+            }
+        }
+
+        return array($names, $path);
+    }
+
+    static function load_vue_templates ($names, $path, $header = true) {
+        //set up the templates based on the names given
+        $retVal = "";
+        $footer = "";
+        foreach ( $names as $name ) {
+            if ($header) {
+                $header = '<script type="text/x-template" id="' . str_replace( '.template', '', $name ) . '">';
+                $footer = "</script>";
+            }
+            $script = $header;
+            //echo "test;";
+            //var_dump( $path . $name );
+            $script .= file_get_contents( $path . $name );
+            $script .= $footer;
+            $retVal .= $script;
+        }
+        return $retVal;
+    }
+
+    static function load_vue_components ($names, $header = true) {
+        //Set up the basic components based on the names given
+        $retVal = "";
+        $footer = "";
+        if ($header) {
+            $header = "<script type='application/javascript'>";
+            $footer = "</script>";
+        }
+
+        foreach ( $names as $name ) {
+            $s_name = str_replace( '.template', '', $name );
+
+            $script = $header .
+                    "Vue.component('$s_name', {
+                    template: '#$s_name',
+                      data: function() {
+						    return {
+						      CMS: TADL[0]
+						    }
+						  }
+                });\n ". $footer;
+            $retVal .= $script;;
+        }
+        return $retVal;
+    }
+
+	function set_global_js( array $js_array, $tags = true ) {
+		$header = "";
+        $footer = "";
+        if($tags) {
+            $header = "<script>";
+            $footer = "</script>";
+        }
+        $r = $header;
 		$r .= 'var TADL =  [];';
 		$p = array();
 		$r .= 'TADL.push({';
@@ -96,7 +170,7 @@ class theme extends \core\controller
 		}
 
 		$r .= '})';
-		$r .= '</script>';
+		$r .= $footer;
 		return $r;
 	}
 }

@@ -1,46 +1,4 @@
 <?php
-	//Load all the Vue JS templates into file.
-
-	function load_vue_templates( $folder_name, $ui_folder, $theme_url, $HOST ) {
-		$path = $ui_folder . '/' . $theme_url . $folder_name . '/';
-
-		$dir = new \DirectoryIterator( $path );
-//todo move this directory into the view controller with an event for plugins to hook into.
-		$retVal = array();
-//$i = new auth();
-
-//get the names
-		$name = array();
-		foreach ( $dir as $fileinfo ) {
-			if ( ! $fileinfo->isDot() ) {
-				$names[] = $fileinfo->getFilename();
-			}
-		}
-
-//set up the templates based on the names
-		foreach ( $names as $name ) {
-			echo '<script type="text/x-template" id="' . str_replace( '.template', '', $name ) . '">';
-			include( $path . $name );
-			echo '</script>';
-		}
-
-//Set up the basic components based on the names
-//these will get extended in the js app file
-		foreach ( $names as $name ) {
-			$sname = str_replace( '.template', '', $name );
-			echo " <script type='application/javascript'>
-                    Vue.component('$sname', {
-                    template: '#$sname',
-                      data: function() {
-						    return {
-						      CMS: TADL[0]
-						    }
-						  }
-                })
-                </script>";
-		}
-	}
-
 	//Cheating here by doing the routing via php instead of Vue JS.
 	//Todo move this theme routing from PHP to Vue JS.
 	$r = explode( "/", $URI );
@@ -112,8 +70,8 @@
 </div>
 <!-- TADL-Bootstrap JavaScript -->
 <?php
-	load_vue_templates( 'pages', $UI, $SITE_THEME_URL, $HOST );
-	load_vue_templates( 'components', $UI, $SITE_THEME_URL, $HOST );
+    echo \controllers\theme::load_vue_js( 'pages', $UI, $SITE_THEME_URL, $HOST );
+    echo \controllers\theme::load_vue_js( 'components', $UI, $SITE_THEME_URL, $HOST );
 ?>
 
 <script
@@ -126,6 +84,7 @@
 <!-- Custom scripts for this template -->
 <script
 	src="//<?php echo $HOST; ?>/<?php echo $SITE_THEME; ?>/js/alice.js"></script>
+<script src="http://cms.dev/cp/load.js"></script>
 </body>
 
 </html>

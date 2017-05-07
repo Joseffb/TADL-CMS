@@ -155,35 +155,70 @@ class routes extends \core\controller
         echo $view->render($theme . 'index.php');
     }
 
-    public function admin_bar_root($fw)
-    {
-        $t = new theme();
-        $t->set_js_var('theme_name', $this->fw->get('ADMIN_THEME'));
-        $t->set_js_var('theme_url', $this->fw->SCHEME . '://' . $this->fw->HOST . '/' . $this->fw->get('ADMIN_THEME') . "/");
-        $this->fw->set('THEME_JS', theme::get_localized_js());
-        $theme = $this->fw->get('ADMIN_BAR_THEME_URL');
-        $view = new \View();
-        return $view->render($theme . 'index.php');
-    }
-
     public function admin_bar_load($fw)
     {
         $t = new theme();
         $t->set_js_var('theme_name', $this->fw->get('ADMIN_BAR_THEME'));
         $t->set_js_var('theme_url', $this->fw->SCHEME . '://' . $this->fw->HOST . '/' . $this->fw->get('ADMIN_BAR_THEME') . "/");
-        $js ="function loadJS(url, callback) {
-	var tag = document.createElement('script');
-	tag.setAttribute('src', url);
-	tag.onload = callback;
-	tag.onreadystatechange = function () {
-		if (this.readyState == 'complete' || this.readyState == 'loaded') callback();
-	};
-	document.getElementsByTagName('head')[0].appendChild(tag);
-}\n";
-        $js .= str_replace(array('<script>','</script>'),"",$this->fw->set('THEME_JS', theme::get_localized_js())).";\n";
-        $js .= "\nvar html = '".str_replace("'","\'",$this->admin_bar_root($this->fw))."';\ndocument.body.appendChild('<div class='tadl-admin-bar'>'+html+'</div>');";
+
+        $this->fw->set('THEME_JS', theme::get_localized_js('global', false, false));
+        $theme = $this->fw->get('ADMIN_BAR_THEME_URL');
+        $view = new \View();
+        $index = $view->render($theme . 'index.php');
+
+        //Vue JS data
+        $pages = \controllers\theme::load_vue_path('pages', $this->fw->UI, $this->fw->ADMIN_BAR_THEME_URL, $this->fw->HOST);
+        $components = \controllers\theme::load_vue_path('components', $this->fw->UI, $this->fw->ADMIN_BAR_THEME_URL, $this->fw->HOST);
+        $template_html = \controllers\theme::load_vue_templates($pages[0], $pages[1]);
+        //Vue JS data
+
+        //Write the JS.
+        $js = "function loadExternalJS(url, callback) {
+                    var tag = document.createElement('script');
+                    tag.setAttribute('src', url);
+                    tag.onload = callback;
+                    tag.onreadystatechange = function () {
+                        if (this.readyState == 'complete' || this.readyState == 'loaded') callback();
+                    };
+                    document.getElementsByTagName('head')[0].appendChild(tag);
+                }\n
+                function loadCSS(rules) {
+                    var css = rules,
+                    head = document.head || document.getElementsByTagName('head')[0],
+                    style = document.createElement('style');
+
+                    style.type = 'text/css';
+                    if (style.styleSheet){
+                      style.styleSheet.cssText = css;
+                    } else {
+                      style.appendChild(document.createTextNode(css));
+                    }
+
+                    head.appendChild(style);
+                }\n
+                ";
+        //Load Admin Bar App CSS
+        if(file_exists($this->fw->UI . $theme . 'admin_bar.css')) {
+            $style = \Web::instance()->minify( 'admin_bar.css', null, true, $this->fw->UI . $theme );
+            $js .= "loadCSS('$style');";
+        }
+        $template_html = str_replace("<script","<scr'+'ipt", $template_html);
+        $template_html = str_replace("</script>","<\/scr'+'ipt>", $template_html);
+        $js .= "\ndocument.write('".$template_html."')\n";
+        $js .=  \controllers\theme::load_vue_components($components[0], false);
+        $js .= $this->fw->get('THEME_JS') . ";\n";
+        $html = "<div class='tadl-admin-bar'>".$index."</div>";
+        $js .= "var z = document.createElement('div');z.innerHTML = '".$html."'; \ndocument.getElementsByTagName('body')[0].appendChild(z);\n";
+
+        //Load Admin Bar App JS
+        if(file_exists($this->fw->UI . $theme . 'admin_bar.js')) {
+            $js .= $view->render($theme . 'admin_bar.js');
+        }
+
+
+
         header("Content-Type: application/javascript");
-        echo $js;
+        echo \Web::instance()->minify($js);
     }
 
     public function frontend_root($fw)
@@ -197,18 +232,12 @@ class routes extends \core\controller
 
     }
 
-    public function mobile_root_route($fw)
-    {
-        // should use browser sniffing
-    }
-
     public function set_default_routes()
     {
         //themes
         $this->fw->route('GET @front_root: /*', 'controllers\routes->frontend_root');
         $this->fw->route('GET @admin: /cp*', 'controllers\routes->admin_root');
         $this->fw->route('GET @admin_bar_js: /cp/load.js', 'controllers\routes->admin_bar_load');
-        $this->fw->route('GET @admin_bar: /cpb/*', 'controllers\routes->admin_bar_root');
     }
 
     // Root pages:
