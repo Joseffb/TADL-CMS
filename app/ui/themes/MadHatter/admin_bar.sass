@@ -1,13 +1,54 @@
 $font-stack:    Helvetica, sans-serif
 $primary-color: #333
 
-#tadl_admin_bar
-  height: 100px
-  width: 33%
+#tadl_admin_wrapper
+  width: 35px
   font: 100% $font-stack
   color: $primary-color
-  background-color: #1ab7ea
-  position: fixed
-  right: 0
-  top: 0
   z-index: 9999
+#tadl_admin_bar
+  display: none
+
+/* The side navigation menu */
+.tadl_sidenav
+  background-color: #1ab7ea
+  height: 100% /* 100% Full-height */
+  width: 0 /* 0 width - change this with JavaScript */
+  position: fixed /* Stay in place */
+  z-index: 1 /* Stay on top */
+  top: 0
+  right: 0
+  overflow-x: hidden /* Disable horizontal scroll */
+  padding-top: 60px /* Place content 60px from the top */
+  transition: 0.5s /* 0.5 second transition effect to slide in the sidenav */
+  /* Position and style the close button (top right corner) */
+  #tadl_closebtn
+    position: absolute
+    top: 0
+    display: none
+    right: 0px
+    font-size: 36px
+    margin-left: 50px
+  #tadl_openbtn
+    position: absolute
+    top: 0
+    margin-left: 5px
+    font-size: 36px
+
+  a
+    padding: 8px 8px 8px 32px
+    text-decoration: none
+    font-size: 25px
+    color: #818181
+    display: block
+    transition: 0.3s
+    /* When you mouse over the navigation links, change their color */
+    a:hover, .offcanvas a:focus
+      color: #f1f1f1
+
+
+/* Style page content - use this if you want to push the page content to the right when you open the side navigation */
+#main
+  transition: margin-left .5s
+  padding: 20px
+

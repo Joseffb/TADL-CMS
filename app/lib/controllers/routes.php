@@ -169,7 +169,9 @@ class routes extends \core\controller
         //Vue JS data
         $pages = \controllers\theme::load_vue_path('pages', $this->fw->UI, $this->fw->ADMIN_BAR_THEME_URL, $this->fw->HOST);
         $components = \controllers\theme::load_vue_path('components', $this->fw->UI, $this->fw->ADMIN_BAR_THEME_URL, $this->fw->HOST);
+        //var_dump($components);
         $template_html = \controllers\theme::load_vue_templates($pages[0], $pages[1]);
+        $template_html .= \controllers\theme::load_vue_templates($components[0], $components[1]);
         //Vue JS data
 
         //Write the JS.
@@ -207,7 +209,7 @@ class routes extends \core\controller
         $js .= "\ndocument.write('".$template_html."')\n";
         $js .=  \controllers\theme::load_vue_components($components[0], false);
         $js .= $this->fw->get('THEME_JS') . ";\n";
-        $html = "<div class='tadl-admin-bar'>".$index."</div>";
+        $html = "<div id='tadl_admin_wrapper' class='tadl_sidenav'>".$index."</div>";
         $js .= "var z = document.createElement('div');\nz.innerHTML = \"".preg_replace("/[\n\r]/",'',str_replace("\"","'",$html))."\"; \ndocument.getElementsByTagName('body')[0].appendChild(z);\n";
 
         //Load Admin Bar App JS
