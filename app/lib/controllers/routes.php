@@ -161,21 +161,30 @@ class routes extends \core\controller
         $t->set_js_var('theme_name', $this->fw->get('ADMIN_BAR_THEME'));
         $t->set_js_var('theme_url', $this->fw->SCHEME . '://' . $this->fw->HOST . '/' . $this->fw->get('ADMIN_BAR_THEME') . "/");
 
+        //TADL JS variables and theme file
         $this->fw->set('THEME_JS', theme::get_localized_js('global', false, false));
         $theme = $this->fw->get('ADMIN_BAR_THEME_URL');
         $view = new \View();
-        $index = $view->render($theme . 'index.php');
+        $html = "<div id='tadl_admin_wrapper' class='tadl_sidenav'>".$view->render($theme . 'index.php')."</div>";
+        $js = "";
 
         //Vue JS data
         $pages = \controllers\theme::load_vue_path('pages', $this->fw->UI, $this->fw->ADMIN_BAR_THEME_URL, $this->fw->HOST);
         $components = \controllers\theme::load_vue_path('components', $this->fw->UI, $this->fw->ADMIN_BAR_THEME_URL, $this->fw->HOST);
-        //var_dump($components);
         $template_html = \controllers\theme::load_vue_templates($pages[0], $pages[1]);
         $template_html .= \controllers\theme::load_vue_templates($components[0], $components[1]);
+        $template_html = str_replace("<script","<scr'+'ipt", $template_html);
+        $template_html = str_replace("</script>","<\/scr'+'ipt>", $template_html);
         //Vue JS data
 
+        //Load Admin Bar App CSS
+                if(file_exists($this->fw->UI . $theme . 'admin_bar.css')) {
+                    $style = \Web::instance()->minify( 'admin_bar.css', null, true, $this->fw->UI . $theme );
+                    $js .= "loadCSS('$style');";
+                }
+
         //Write the JS.
-        $js = "function loadExternalJS(url, callback) {
+        $js .= "function loadExternalJS(url, callback) {
                     var tag = document.createElement('script');
                     tag.setAttribute('src', url);
                     tag.onload = callback;
@@ -199,17 +208,9 @@ class routes extends \core\controller
                     head.appendChild(style);
                 }\n
                 ";
-        //Load Admin Bar App CSS
-        if(file_exists($this->fw->UI . $theme . 'admin_bar.css')) {
-            $style = \Web::instance()->minify( 'admin_bar.css', null, true, $this->fw->UI . $theme );
-            $js .= "loadCSS('$style');";
-        }
-        $template_html = str_replace("<script","<scr'+'ipt", $template_html);
-        $template_html = str_replace("</script>","<\/scr'+'ipt>", $template_html);
         $js .= "\ndocument.write('".$template_html."')\n";
         $js .=  \controllers\theme::load_vue_components($components[0], false);
         $js .= $this->fw->get('THEME_JS') . ";\n";
-        $html = "<div id='tadl_admin_wrapper' class='tadl_sidenav'>".$index."</div>";
         $js .= "var z = document.createElement('div');\nz.innerHTML = \"".preg_replace("/[\n\r]/",'',str_replace("\"","'",$html))."\"; \ndocument.getElementsByTagName('body')[0].appendChild(z);\n";
 
         //Load Admin Bar App JS
@@ -217,8 +218,8 @@ class routes extends \core\controller
             $js .= $view->render($theme . 'admin_bar.js');
         }
 
-
-
+        $fw->set("CORS.origin", '*'); //todo limit origin in CORS
+        //$fw->set("HEADERS", array("Content-Type"=>"application/javascript"));
         header("Content-Type: application/javascript");
         echo $js;
     }
