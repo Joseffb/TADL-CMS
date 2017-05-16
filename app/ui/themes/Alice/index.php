@@ -84,7 +84,7 @@
 <!-- Custom scripts for this template -->
 <script
 	src="//<?php echo $HOST; ?>/<?php echo $SITE_THEME; ?>/js/alice.js"></script>
-<script src="http://cms.dev/cp/load.js"></script>
+<script src="http://<?php echo $HOST; ?>/cp/load.js"></script>
 </body>
 
 </html>
